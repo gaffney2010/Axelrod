@@ -19,9 +19,9 @@ class TestGenericPlayerOne(unittest.TestCase):
     p3 = axl.MemoryOnePlayer(four_vector=(1, 0.5, 1, 0.5))
 
     def test_name(self):
-        self.assertEqual(self.p1.name, "Generic Memory One Player: (0, 0, 0, 0)")
-        self.assertEqual(self.p2.name, "Generic Memory One Player: (1, 0, 1, 0)")
-        self.assertEqual(self.p3.name, "Generic Memory One Player: (1, 0.5, 1, 0.5)")
+        self.assertEqual(repr(self.p1), "Generic Memory One Player: (0, 0, 0, 0), C")
+        self.assertEqual(repr(self.p2), "Generic Memory One Player: (1, 0, 1, 0), C")
+        self.assertEqual(repr(self.p3), "Generic Memory One Player: (1, 0.5, 1, 0.5), C")
 
     def test_stochastic_classification(self):
         self.assertFalse(axl.Classifiers["stochastic"](self.p1))
@@ -42,9 +42,6 @@ class TestWinStayLoseShift(TestPlayer):
         "manipulates_source": False,
         "manipulates_state": False,
     }
-
-    def test_class_classification(self):
-        self.assertEqual(self.player.classifier, self.expected_classifier)
 
     def test_strategy(self):
         # Check that switches if does not get best payoff.
@@ -293,9 +290,9 @@ class TestGenericReactiveStrategy(unittest.TestCase):
     p3 = axl.ReactivePlayer(probabilities=(1, 0.5))
 
     def test_name(self):
-        self.assertEqual(self.p1.name, "Reactive Player: (0, 0)")
-        self.assertEqual(self.p2.name, "Reactive Player: (1, 0)")
-        self.assertEqual(self.p3.name, "Reactive Player: (1, 0.5)")
+        self.assertEqual(repr(self.p1), "Reactive Player: (0, 0)")
+        self.assertEqual(repr(self.p2), "Reactive Player: (1, 0)")
+        self.assertEqual(repr(self.p3), "Reactive Player: (1, 0.5)")
 
     def test_four_vector(self):
         self.assertEqual(

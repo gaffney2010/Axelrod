@@ -142,7 +142,7 @@ class TestMemoryTwoPlayer(unittest.TestCase):
 
 class TestMemoryStochastic(TestPlayer):
     name = (
-        "Generic Memory Two Player: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1): C"
+        "Generic Memory Two Player: C"
     )
     player = axl.MemoryTwoPlayer
     expected_classifier = {

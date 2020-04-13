@@ -104,7 +104,7 @@ def rebuild_classifier_table(
     filename = os.path.join(dirname, path)
 
     all_player_dicts = dict()
-    for p in players:
+    for pi, p in enumerate(players):
         new_player_dict = dict()
         for c in classifiers:
             new_player_dict[c.name] = c.classify_player(p)

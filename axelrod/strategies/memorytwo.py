@@ -75,8 +75,6 @@ class MemoryTwoPlayer(Player):
             warnings.warn("Memory two player is set to default, Cooperator.")
 
         self.set_sixteen_vector(sixteen_vector)
-        if self.name == "Generic Memory Two Player":
-            self.name = "%s: %s" % (self.name, sixteen_vector)
 
     def set_sixteen_vector(self, sixteen_vector: Tuple):
         if not all(0 <= p <= 1 for p in sixteen_vector):

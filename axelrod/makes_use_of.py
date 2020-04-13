@@ -17,7 +17,9 @@ def method_makes_use_of(method: Callable) -> Set[Text]:
 
 def makes_use_of(player: Type[Player]) -> Set[Text]:
     result = set()
-    for method in inspect.getmembers(player, inspect.ismethod):
+    for method in inspect.getmembers(
+        player, predicate=lambda x: inspect.isfunction(x) or inspect.ismethod(x)
+    ):
         if method[0] == "__init__":
             continue
         result.update(method_makes_use_of(method[1]))

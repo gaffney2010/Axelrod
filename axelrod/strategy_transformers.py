@@ -16,7 +16,7 @@ from numpy.random import choice
 
 from axelrod.strategies.sequence_player import SequencePlayer
 from .action import Action
-from .makes_use_of import method_makes_use_of
+from .makes_use_of import makes_use_of, method_makes_use_of
 from .player import Player
 from .random_ import random_choice
 
@@ -134,6 +134,7 @@ def StrategyTransformerFactory(
             else:
                 classifier = original_classifier
             strategy_wrapper_uses = method_makes_use_of(strategy_wrapper)
+            strategy_wrapper_uses.update(makes_use_of(PlayerClass))
             if "makes_use_of" in classifier:
                 classifier["makes_use_of"].update(strategy_wrapper_uses)
             elif strategy_wrapper_uses:
