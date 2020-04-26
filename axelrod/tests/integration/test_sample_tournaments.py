@@ -8,7 +8,7 @@ C, D = axl.Action.C, axl.Action.D
 class TestSampleTournaments(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.game = axl.IpdGame()
+        cls.game = axl.Game()
 
     @classmethod
     def get_test_outcome(cls, outcome, turns=10):
@@ -18,7 +18,7 @@ class TestSampleTournaments(unittest.TestCase):
         players = [getattr(axl, n)() for n in names]
 
         # Play the tournament and build the actual outcome tuples.
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             players=players, game=cls.game, turns=turns, repetitions=1
         )
         results = tournament.play(progress_bar=False)

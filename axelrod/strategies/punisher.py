@@ -1,12 +1,12 @@
 from typing import List
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Punisher(IpdPlayer):
+class Punisher(Player):
     """
     A player starts by cooperating however will defect if at any point the
     opponent has defected, but forgets after meme_length matches, with
@@ -38,7 +38,7 @@ class Punisher(IpdPlayer):
         self.grudged = False
         self.grudge_memory = 1
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Begins by playing C, then plays D for an amount of rounds proportional
         to the opponents historical '%' of playing D if the opponent ever
@@ -61,7 +61,7 @@ class Punisher(IpdPlayer):
         return C
 
 
-class InversePunisher(IpdPlayer):
+class InversePunisher(Player):
     """
     An inverted version of Punisher. The player starts by cooperating however
     will defect if at any point the opponent has defected, and forgets after
@@ -90,7 +90,7 @@ class InversePunisher(IpdPlayer):
         self.grudged = False
         self.grudge_memory = 1
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Begins by playing C, then plays D for an amount of rounds proportional
         to the opponents historical '%' of playing C if the opponent ever plays
@@ -113,7 +113,7 @@ class InversePunisher(IpdPlayer):
         return C
 
 
-class LevelPunisher(IpdPlayer):
+class LevelPunisher(Player):
     """
     A player starts by cooperating however, after 10 rounds
     will defect if at any point the number of defections
@@ -135,7 +135,7 @@ class LevelPunisher(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) < 10:
             return C
         elif (len(opponent.history) - opponent.cooperations) / len(
@@ -146,7 +146,7 @@ class LevelPunisher(IpdPlayer):
             return C
 
 
-class TrickyLevelPunisher(IpdPlayer):
+class TrickyLevelPunisher(Player):
     """
     A player starts by cooperating however, after 10, 50 and 100 rounds
     will defect if at any point the percentage of defections
@@ -168,7 +168,7 @@ class TrickyLevelPunisher(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) == 0:
             return C
         if len(opponent.history) < 10:

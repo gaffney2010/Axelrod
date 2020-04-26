@@ -3,18 +3,18 @@ from typing import Tuple
 
 from axelrod._strategy_utils import thue_morse_generator
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class SequencePlayer(IpdPlayer):
+class SequencePlayer(Player):
     """Abstract base class for players that use a generated sequence to
     determine their plays.
 
     Names:
 
-    - Sequence IpdPlayer: Original name by Marc Harper
+    - Sequence Player: Original name by Marc Harper
     """
 
     def __init__(
@@ -33,7 +33,7 @@ class SequencePlayer(IpdPlayer):
         else:
             return C
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Iterate through the sequence and apply the meta strategy
         for s in self.sequence_generator:
             return self.meta_strategy(s)

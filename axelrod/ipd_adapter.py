@@ -1,7 +1,7 @@
 """This is an adapter for historical API on Player, Game, Match, and Tournament
 
-For each of these classes, we keep a copy of the Ipd version of them as an
-element, and translate the historical API to the current API on the Ipd version.
+For each of these classes, we keep a copy of the  version of them as an
+element, and translate the historical API to the current API on the  version.
 This keeps legacy code working as the internal API shifts to accommodate a more
 general class of games.
 """
@@ -15,11 +15,11 @@ import axelrod as axl
 Score = Union[int, float]
 
 
-class Player(axl.IpdPlayer):
+class Player(axl.Player):
     """Legacy players derive from this adapter."""
 
     def __new__(cls, *args, **kwargs):
-        """Caches arguments for IpdPlayer cloning."""
+        """Caches arguments for Player cloning."""
         obj = super().__new__(cls)
         obj.init_kwargs = cls.init_params(*args, **kwargs)
         return obj
@@ -44,14 +44,14 @@ class Player(axl.IpdPlayer):
         return boundargs.arguments
 
     def __init__(self):
-        self._player = axl.IpdPlayer()
+        self._player = axl.Player()
 
-    def strategy(self, opponent: axl.IpdPlayer) -> axl.Action:
+    def strategy(self, opponent: axl.Player) -> axl.Action:
         """We expect the derived class to set this behavior."""
         raise NotImplementedError()
 
     def play(
-        self, opponent: axl.IpdPlayer, noise: float = 0
+        self, opponent: axl.Player, noise: float = 0
     ) -> Tuple[axl.Action, axl.Action]:
         # We have to provide _player.play a copy of this strategy, which will
         # have an overwritten strategy, and possibly saved state and helper
@@ -130,7 +130,7 @@ class Player(axl.IpdPlayer):
 
 class Game(object):
     def __init__(self, r: Score = 3, s: Score = 0, t: Score = 5, p: Score = 1):
-        self._game = axl.IpdGame(r, s, t, p)
+        self._game = axl.Game(r, s, t, p)
 
     def score(self, pair: Tuple[axl.Action, axl.Action]) -> Tuple[Score, Score]:
         return self._game.score(pair)
@@ -158,16 +158,16 @@ class Game(object):
 class Match(object):
     def __init__(
         self,
-        players: Tuple[axl.IpdPlayer],
+        players: Tuple[axl.Player],
         turns: int = None,
         prob_end: float = None,
-        game: axl.IpdGame = None,
+        game: axl.Game = None,
         deterministic_cache: axl.DeterministicCache = None,
         noise: float = 0,
         match_attributes: Dict = None,
         reset: bool = True,
     ):
-        self._match = axl.IpdMatch(
+        self._match = axl.Match(
             players,
             turns,
             prob_end,
@@ -179,11 +179,11 @@ class Match(object):
         )
 
     @property
-    def players(self) -> Tuple[axl.IpdPlayer]:
+    def players(self) -> Tuple[axl.Player]:
         return self._match.players
 
     @players.setter
-    def players(self, players: Tuple[axl.IpdPlayer]):
+    def players(self, players: Tuple[axl.Player]):
         self._match.players = players
 
     @property
@@ -262,7 +262,7 @@ class Match(object):
     def final_score_per_turn(self) -> Score:
         return self._match.final_score_per_turn()
 
-    def winner(self) -> axl.IpdPlayer:
+    def winner(self) -> axl.Player:
         return self._match.winner()
 
     def cooperation(self):
@@ -287,9 +287,9 @@ class Match(object):
 class Tournament(object):
     def __init__(
         self,
-        players: List[axl.IpdPlayer],
+        players: List[axl.Player],
         name: str = "axelrod",
-        game: axl.IpdGame = None,
+        game: axl.Game = None,
         turns: int = None,
         prob_end: float = None,
         repetitions: int = 10,
@@ -297,7 +297,7 @@ class Tournament(object):
         edges: List[Tuple] = None,
         match_attributes: dict = None,
     ) -> None:
-        self._tournament = axl.IpdTournament(
+        self._tournament = axl.Tournament(
             players,
             name,
             game,

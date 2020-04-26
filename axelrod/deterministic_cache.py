@@ -18,9 +18,9 @@ from typing import List, Tuple
 
 from axelrod import Classifiers
 from .action import Action
-from .player import IpdPlayer
+from .player import Player
 
-CachePlayerKey = Tuple[IpdPlayer, IpdPlayer]
+CachePlayerKey = Tuple[Player, Player]
 CacheKey = Tuple[str, str]
 
 
@@ -52,7 +52,7 @@ def _is_valid_key(key: CachePlayerKey) -> bool:
     if not isinstance(key, tuple) or len(key) != 2:
         return False
 
-    if not (isinstance(key[0], IpdPlayer) and isinstance(key[1], IpdPlayer)):
+    if not (isinstance(key[0], Player) and isinstance(key[1], Player)):
         return False
 
     if Classifiers["stochastic"](key[0]) or Classifiers["stochastic"](key[1]):
@@ -89,8 +89,8 @@ class DeterministicCache(UserDict):
     By also storing those cached results in a file, we can re-use the cache
     between multiple tournaments if necessary.
 
-    The cache is a dictionary mapping pairs of IpdPlayer classes to a list of
-    resulting interactions. e.g. for a 3 turn IpdMatch between Cooperator and
+    The cache is a dictionary mapping pairs of Player classes to a list of
+    resulting interactions. e.g. for a 3 turn Match between Cooperator and
     Alternator, the dictionary entry would be:
 
     (axelrod.Cooperator, axelrod.Alternator): [(C, C), (C, D), (C, C)]
@@ -132,7 +132,7 @@ class DeterministicCache(UserDict):
 
         if not _is_valid_key(key):
             raise ValueError(
-                "Key must be a tuple of 2 deterministic axelrod IpdPlayer classes"
+                "Key must be a tuple of 2 deterministic axelrod Player classes"
             )
 
         if not _is_valid_value(value):

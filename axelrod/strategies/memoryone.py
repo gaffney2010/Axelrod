@@ -5,13 +5,13 @@ import warnings
 from typing import Tuple
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class MemoryOnePlayer(IpdPlayer):
+class MemoryOnePlayer(Player):
     """
     Uses a four-vector for strategies based on the last round of play,
     (P(C|CC), P(C|CD), P(C|DC), P(C|DD)). Win-Stay Lose-Shift is set as
@@ -24,7 +24,7 @@ class MemoryOnePlayer(IpdPlayer):
     - Memory One: [Nowak1990]_
     """
 
-    name = "Generic Memory One IpdPlayer"
+    name = "Generic Memory One Player"
     classifier = {
         "memory_depth": 1,  # Memory-one Four-Vector
         "stochastic": True,
@@ -73,7 +73,7 @@ class MemoryOnePlayer(IpdPlayer):
             warnings.warn("Memory one player is set to default (1, 0, 0, 1).")
 
         self.set_four_vector(four_vector)
-        if self.name == "Generic Memory One IpdPlayer":
+        if self.name == "Generic Memory One Player":
             self.name = "%s: %s" % (self.name, four_vector)
 
     def set_four_vector(self, four_vector: Tuple[float, float, float, float]):
@@ -86,7 +86,7 @@ class MemoryOnePlayer(IpdPlayer):
         self._four_vector = dict(zip([(C, C), (C, D), (D, C), (D, D)], four_vector))
         self.classifier["stochastic"] = any(0 < x < 1 for x in set(four_vector))
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) == 0:
             return self._initial
         # Determine which probability to use
@@ -294,7 +294,7 @@ class SoftJoss(MemoryOnePlayer):
         return "%s: %s" % (self.name, round(self.q, 2))
 
 
-class ALLCorALLD(IpdPlayer):
+class ALLCorALLD(Player):
     """This strategy is at the parameter extreme of the ZD strategies (phi = 0).
     It simply repeats its last move, and so mimics ALLC or ALLD after round one.
     If the tournament is noisy, there will be long runs of C and D.
@@ -319,7 +319,7 @@ class ALLCorALLD(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0:
             return random_choice(0.6)
         return self.history[-1]
@@ -335,7 +335,7 @@ class ReactivePlayer(MemoryOnePlayer):
     - Reactive: [Nowak1989]_
     """
 
-    name = "Reactive IpdPlayer"
+    name = "Reactive Player"
 
     def __init__(self, probabilities: Tuple[float, float]) -> None:
         four_vector = (*probabilities, *probabilities)

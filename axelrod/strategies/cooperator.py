@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Cooperator(IpdPlayer):
+class Cooperator(Player):
     """A player who only ever cooperates.
 
     Names:
@@ -26,11 +26,11 @@ class Cooperator(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         return C
 
 
-class TrickyCooperator(IpdPlayer):
+class TrickyCooperator(Player):
     """
     A cooperator that is trying to be tricky.
 
@@ -53,7 +53,7 @@ class TrickyCooperator(IpdPlayer):
     _min_history_required_to_try_trickiness = 3
     _max_history_depth_for_trickiness = -10
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Almost always cooperates, but will try to trick the opponent by
         defecting.
 

@@ -7,7 +7,7 @@ from numpy.random import choice
 
 from axelrod.action import Action, actions_to_str, str_to_actions
 from axelrod.evolvable_player import EvolvablePlayer, InsufficientParametersError, crossover_dictionaries
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 
 C, D = Action.C, Action.D
@@ -227,7 +227,7 @@ default_tft_lookup_table = {
 }
 
 
-class LookerUp(IpdPlayer):
+class LookerUp(Player):
     """
     This strategy uses a LookupTable to decide its next action. If there is not
     enough history to use the table, it calls from a list of
@@ -361,7 +361,7 @@ class LookerUp(IpdPlayer):
             return initial_actions + tuple([C] * initial_actions_shortfall)
         return initial_actions[:table_depth]
 
-    def strategy(self, opponent: IpdPlayer) -> Reaction:
+    def strategy(self, opponent: Player) -> Reaction:
         turn_index = len(opponent.history)
         while turn_index < len(self._initial_actions_pool):
             return self._initial_actions_pool[turn_index]
@@ -573,7 +573,7 @@ class Winner21(LookerUp):
         super().__init__(parameters=params, pattern=pattern, initial_actions=(D, C))
 
 
-def get_last_n_plays(player: IpdPlayer, depth: int) -> tuple:
+def get_last_n_plays(player: Player, depth: int) -> tuple:
     """Returns the last N plays of player as a tuple."""
     if depth == 0:
         return ()

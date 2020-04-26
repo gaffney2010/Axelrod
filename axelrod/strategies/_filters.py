@@ -13,7 +13,7 @@ def passes_operator_filter(player, classifier_key, value, operator):
 
     For the following strategy:
 
-    class ExampleStrategy(IpdPlayer):
+    class ExampleStrategy(Player):
         classifier = {
             'stochastic': True,
             'inspects_source': False,
@@ -58,7 +58,7 @@ def passes_in_list_filter(player, classifier_key, value):
 
     For the following strategy:
 
-    class ExampleStrategy(IpdPlayer):
+    class ExampleStrategy(Player):
         classifier = {
             'stochastic': True,
             'inspects_source': False,
@@ -101,7 +101,7 @@ def passes_filterset(strategy, filterset):
 
     For the following strategy:
 
-    class ExampleStrategy(IpdPlayer):
+    class ExampleStrategy(Player):
         classifier = {
             'stochastic': True,
             'inspects_source': False,

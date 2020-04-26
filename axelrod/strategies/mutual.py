@@ -1,11 +1,11 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class Desperate(IpdPlayer):
+class Desperate(Player):
     """A player that only cooperates after mutual defection.
 
     Names:
@@ -23,7 +23,7 @@ class Desperate(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not opponent.history:
             return random_choice()
         if self.history[-1] == D and opponent.history[-1] == D:
@@ -31,7 +31,7 @@ class Desperate(IpdPlayer):
         return D
 
 
-class Hopeless(IpdPlayer):
+class Hopeless(Player):
     """A player that only defects after mutual cooperation.
 
     Names:
@@ -49,7 +49,7 @@ class Hopeless(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not opponent.history:
             return random_choice()
         if self.history[-1] == C and opponent.history[-1] == C:
@@ -57,7 +57,7 @@ class Hopeless(IpdPlayer):
         return C
 
 
-class Willing(IpdPlayer):
+class Willing(Player):
     """A player that only defects after mutual defection.
 
     Names:
@@ -75,7 +75,7 @@ class Willing(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not opponent.history:
             return random_choice()
         if self.history[-1] == D and opponent.history[-1] == D:

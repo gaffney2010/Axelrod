@@ -2,12 +2,12 @@ import copy
 from typing import Any, Dict, Union
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class GoByMajority(IpdPlayer):
+class GoByMajority(Player):
     """Submitted to Axelrod's second tournament by Gail Grisell.  It came 23rd
     and was written in 10 lines of BASIC.
 
@@ -70,7 +70,7 @@ class GoByMajority(IpdPlayer):
     def __repr__(self):
         return self.name
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """This is affected by the history of the opponent.
 
         As long as the opponent cooperates at least as often as they defect then

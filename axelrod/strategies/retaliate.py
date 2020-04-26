@@ -1,12 +1,12 @@
 from collections import defaultdict
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Retaliate(IpdPlayer):
+class Retaliate(Player):
     """
     A player starts by cooperating but will retaliate once the opponent
     has won more than 10 percent times the number of defections the player has.
@@ -29,14 +29,14 @@ class Retaliate(IpdPlayer):
 
     def __init__(self, retaliation_threshold: float = 0.1) -> None:
         """
-        Uses the basic init from the IpdPlayer class, but also set the name to
+        Uses the basic init from the Player class, but also set the name to
         include the retaliation setting.
         """
         super().__init__()
         self.retaliation_threshold = retaliation_threshold
         self.play_counts = defaultdict(int)  # type: defaultdict
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         If the opponent has played D to my C more often than x% of the time
         that I've done the same to him, play D. Otherwise, play C.
@@ -82,7 +82,7 @@ class Retaliate3(Retaliate):
         super().__init__(retaliation_threshold=retaliation_threshold)
 
 
-class LimitedRetaliate(IpdPlayer):
+class LimitedRetaliate(Player):
     """
     A player that co-operates unless the opponent defects and wins.
     It will then retaliate by defecting. It stops when either, it has beaten
@@ -125,7 +125,7 @@ class LimitedRetaliate(IpdPlayer):
         self.retaliation_limit = retaliation_limit
         self.play_counts = defaultdict(int)  # type: defaultdict
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         If the opponent has played D to my C more often than x% of the time
         that I've done the same to him, retaliate by playing D but stop doing

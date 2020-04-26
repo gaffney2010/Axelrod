@@ -17,7 +17,7 @@ import random
 from typing import Dict, List, Tuple, Optional
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 from axelrod.strategy_transformers import FinalTransformer
 from scipy.stats import chisquare
@@ -27,7 +27,7 @@ from .memoryone import MemoryOnePlayer
 C, D = Action.C, Action.D
 
 
-class FirstByDavis(IpdPlayer):
+class FirstByDavis(Player):
     """
     Submitted to Axelrod's first tournament by Morton Davis.
 
@@ -64,7 +64,7 @@ class FirstByDavis(IpdPlayer):
         super().__init__()
         self._rounds_to_cooperate = rounds_to_cooperate
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Begins by playing C, then plays D for the remaining rounds if the
         opponent ever plays D."""
         if len(self.history) < self._rounds_to_cooperate:
@@ -74,7 +74,7 @@ class FirstByDavis(IpdPlayer):
         return C
 
 
-class FirstByDowning(IpdPlayer):
+class FirstByDowning(Player):
     """
     Submitted to Axelrod's first tournament by Downing
 
@@ -89,7 +89,7 @@ class FirstByDowning(IpdPlayer):
     > based on an outcome maximization interpretation of human performances proposed
     > by Downing (1975)."
 
-    The Downing (1975) paper is "The Prisoner's Dilemma IpdGame as a
+    The Downing (1975) paper is "The Prisoner's Dilemma Game as a
     Problem-Solving Phenomenon" [Downing1975]_ and this is used to implement the
     strategy.
 
@@ -248,7 +248,7 @@ class FirstByDowning(IpdPlayer):
         self.number_opponent_cooperations_in_response_to_C = 0
         self.number_opponent_cooperations_in_response_to_D = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         round_number = len(self.history) + 1
 
         if round_number == 1:
@@ -284,7 +284,7 @@ class FirstByDowning(IpdPlayer):
         return self.history[-1].flip()
 
 
-class FirstByFeld(IpdPlayer):
+class FirstByFeld(Player):
     """
     Submitted to Axelrod's first tournament by Scott Feld.
 
@@ -349,7 +349,7 @@ class FirstByFeld(IpdPlayer):
         rounds = len(self.history)
         return max(self._start_coop_prob + slope * rounds, self._end_coop_prob)
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not opponent.history:
             return C
         if opponent.history[-1] == D:
@@ -358,7 +358,7 @@ class FirstByFeld(IpdPlayer):
         return random_choice(p)
 
 
-class FirstByGraaskamp(IpdPlayer):
+class FirstByGraaskamp(Player):
     """
     Submitted to Axelrod's first tournament by James Graaskamp.
 
@@ -423,7 +423,7 @@ class FirstByGraaskamp(IpdPlayer):
         self.opponent_is_random = False
         self.next_random_defection_turn = None  # type: Optional[int]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """This is the actual strategy"""
         # First move
         if not self.history:
@@ -459,7 +459,7 @@ class FirstByGraaskamp(IpdPlayer):
         return C
 
 
-class FirstByGrofman(IpdPlayer):
+class FirstByGrofman(Player):
     """
     Submitted to Axelrod's first tournament by Bernard Grofman.
 
@@ -485,7 +485,7 @@ class FirstByGrofman(IpdPlayer):
         "manipulates_source": False,
         "manipulates_state": False,
     }
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0 or self.history[-1] == opponent.history[-1]:
             return C
         return random_choice(2 / 7)
@@ -523,7 +523,7 @@ class FirstByJoss(MemoryOnePlayer):
         super().__init__(four_vector)
 
 
-class FirstByNydegger(IpdPlayer):
+class FirstByNydegger(Player):
     """
     Submitted to Axelrod's first tournament by Rudy Nydegger.
 
@@ -606,7 +606,7 @@ class FirstByNydegger(IpdPlayer):
             a += weight * score_map[plays]
         return a
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0:
             return C
         if len(self.history) == 1:
@@ -624,7 +624,7 @@ class FirstByNydegger(IpdPlayer):
         return C
 
 
-class FirstByShubik(IpdPlayer):
+class FirstByShubik(Player):
     """
     Submitted to Axelrod's first tournament by Martin Shubik.
 
@@ -688,7 +688,7 @@ class FirstByShubik(IpdPlayer):
             if self.retaliation_remaining == 0:
                 self.is_retaliating = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not opponent.history:
             return C
 
@@ -709,7 +709,7 @@ class FirstByShubik(IpdPlayer):
         return C
 
 
-class FirstByTullock(IpdPlayer):
+class FirstByTullock(Player):
     """
     Submitted to Axelrod's first tournament by Gordon Tullock.
 
@@ -756,7 +756,7 @@ class FirstByTullock(IpdPlayer):
         self._rounds_to_cooperate = 11
         self.memory_depth = self._rounds_to_cooperate
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) < self._rounds_to_cooperate:
             return C
         rounds = self._rounds_to_cooperate - 1
@@ -766,7 +766,7 @@ class FirstByTullock(IpdPlayer):
         return random_choice(prob_cooperate)
 
 
-class FirstByAnonymous(IpdPlayer):
+class FirstByAnonymous(Player):
     """
     Submitted to Axelrod's first tournament by a graduate student whose name was
     withheld.
@@ -802,13 +802,13 @@ class FirstByAnonymous(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         r = random.uniform(3, 7) / 10
         return random_choice(r)
 
 
 @FinalTransformer((D, D), name_prefix=None)
-class FirstBySteinAndRapoport(IpdPlayer):
+class FirstBySteinAndRapoport(Player):
     """
     Submitted to Axelrod's first tournament by William Stein and Amnon Rapoport.
 
@@ -858,7 +858,7 @@ class FirstBySteinAndRapoport(IpdPlayer):
         self.alpha = alpha
         self.opponent_is_random = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         round_number = len(self.history) + 1
 
         # First 4 moves
@@ -880,7 +880,7 @@ class FirstBySteinAndRapoport(IpdPlayer):
 
 
 @FinalTransformer((D, D), name_prefix=None)
-class FirstByTidemanAndChieruzzi(IpdPlayer):
+class FirstByTidemanAndChieruzzi(Player):
     """
     Submitted to Axelrod's first tournament by Nicolas Tideman and Paula
     Chieruzzi.
@@ -960,7 +960,7 @@ class FirstByTidemanAndChieruzzi(IpdPlayer):
         self.retaliation_remaining = 0
         self.remembered_number_of_opponent_defectioons = 0
 
-    def _score_last_round(self, opponent: IpdPlayer):
+    def _score_last_round(self, opponent: Player):
         """Updates the scores for each player."""
         # Load the default game if not supplied by a tournament.
         game = self.match_attributes["game"]
@@ -969,7 +969,7 @@ class FirstByTidemanAndChieruzzi(IpdPlayer):
         self.current_score += scores[0]
         self.opponent_score += scores[1]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not opponent.history:
             return C
 

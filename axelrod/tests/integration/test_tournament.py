@@ -14,7 +14,7 @@ from hypothesis import given, settings
 class TestTournament(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.game = axl.IpdGame()
+        cls.game = axl.Game()
         cls.players = [
             axl.Cooperator(),
             axl.TitForTat(),
@@ -57,7 +57,7 @@ class TestTournament(unittest.TestCase):
         )
 
     def test_serial_play(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -69,7 +69,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(actual_outcome, self.expected_outcome)
 
     def test_parallel_play(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -89,7 +89,7 @@ class TestTournament(unittest.TestCase):
         ]
         files = []
         for _ in range(2):
-            tournament = axl.IpdTournament(
+            tournament = axl.Tournament(
                 name="test",
                 players=deterministic_players,
                 game=self.game,
@@ -113,7 +113,7 @@ class TestTournament(unittest.TestCase):
                 for s in axl.short_run_time_strategies
                 if axl.Classifiers["stochastic"](s())
             ]
-            tournament = axl.IpdTournament(
+            tournament = axl.Tournament(
                 name="test",
                 players=stochastic_players,
                 game=self.game,
@@ -130,13 +130,13 @@ class TestNoisyTournament(unittest.TestCase):
     def test_noisy_tournament(self):
         # Defector should win for low noise
         players = [axl.Cooperator(), axl.Defector()]
-        tournament = axl.IpdTournament(players, turns=5, repetitions=3, noise=0.0)
+        tournament = axl.Tournament(players, turns=5, repetitions=3, noise=0.0)
         results = tournament.play(progress_bar=False)
         self.assertEqual(results.ranked_names[0], "Defector")
 
         # If the noise is large enough, cooperator should win
         players = [axl.Cooperator(), axl.Defector()]
-        tournament = axl.IpdTournament(players, turns=5, repetitions=3, noise=0.75)
+        tournament = axl.Tournament(players, turns=5, repetitions=3, noise=0.75)
         results = tournament.play(progress_bar=False)
         self.assertEqual(results.ranked_names[0], "Cooperator")
 
@@ -149,7 +149,7 @@ class TestProbEndTournament(unittest.TestCase):
         p1 = FinalTransformer(["D", "D"])(axl.Cooperator)()
         p2 = FinalTransformer(["D", "D"])(axl.Cooperator)()
         players = [p1, p2]
-        tournament = axl.IpdTournament(players, prob_end=0.5, repetitions=1)
+        tournament = axl.Tournament(players, prob_end=0.5, repetitions=1)
         results = tournament.play(progress_bar=False)
         # Check that both plays always cooperated
         for rating in results.cooperating_rating:
@@ -165,7 +165,7 @@ class TestProbEndTournament(unittest.TestCase):
         p3 = axl.Cooperator()
         players = [p1, p2, p3]
         axl.seed(0)
-        tournament = axl.IpdTournament(players, prob_end=0.5, repetitions=2)
+        tournament = axl.Tournament(players, prob_end=0.5, repetitions=2)
         results = tournament.play(progress_bar=False)
         # Check that match length are different across the repetitions
         self.assertNotEqual(results.match_lengths[0], results.match_lengths[1])

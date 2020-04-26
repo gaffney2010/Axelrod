@@ -144,9 +144,9 @@ class TestFingerprint(unittest.TestCase):
 
         # Interactions are invariant for any points where y is zero, and
         # the score should be maximum possible.
-        # IpdPlayer 1 is Point(0.0, 0.0).
-        # IpdPlayer 4 is Point(0.5, 0.0).
-        # IpdPlayer 7 is Point(1.0, 0.0).
+        # Player 1 is Point(0.0, 0.0).
+        # Player 4 is Point(0.5, 0.0).
+        # Player 7 is Point(1.0, 0.0).
         for iplayer in (1, 4, 7):
             for turns in af.interactions[(0, iplayer)]:
                 self.assertEqual(len(turns), 5)
@@ -155,7 +155,7 @@ class TestFingerprint(unittest.TestCase):
         self.assertEqual(af.data[Point(0.5, 0.0)], 3.0)
         self.assertEqual(af.data[Point(1.0, 0.0)], 3.0)
 
-        # IpdPlayer 3 is Point(0.0, 1.0), which means constant defection
+        # Player 3 is Point(0.0, 1.0), which means constant defection
         # from the probe. But the Cooperator doesn't change and score is zero.
         for turns in af.interactions[(0, 3)]:
             self.assertEqual(len(turns), 5)
@@ -169,9 +169,9 @@ class TestFingerprint(unittest.TestCase):
         # Tit-for-Tats will always cooperate if left to their own devices,
         # so interactions are invariant for any points where y is zero,
         # and the score should be maximum possible.
-        # IpdPlayer 1 is Point(0.0, 0.0).
-        # IpdPlayer 4 is Point(0.5, 0.0).
-        # IpdPlayer 7 is Point(1.0, 0.0).
+        # Player 1 is Point(0.0, 0.0).
+        # Player 4 is Point(0.5, 0.0).
+        # Player 7 is Point(1.0, 0.0).
         for iplayer in (1, 4, 7):
             for turns in af.interactions[(0, iplayer)]:
                 self.assertEqual(len(turns), 5)
@@ -180,7 +180,7 @@ class TestFingerprint(unittest.TestCase):
         self.assertEqual(af.data[Point(0.5, 0.0)], 3.0)
         self.assertEqual(af.data[Point(1.0, 0.0)], 3.0)
 
-        # IpdPlayer 3 is Point(0.0, 1.0) which implies defection after the
+        # Player 3 is Point(0.0, 1.0) which implies defection after the
         # first turn since Tit-for-Tat is playing, and a score of 0.8
         # since we get zero on first turn and one point per turn later.
         for turns in af.interactions[(0, 3)]:
@@ -463,23 +463,23 @@ class TestTransitiveFingerprint(unittest.TestCase):
         filename = axl_filename(path)
         with open(filename, "w") as f:
             f.write(
-                """Interaction index,Player index,Opponent index,Repetition,IpdPlayer name,Opponent name,Actions
-0,0,1,0,IpdPlayer0,IpdPlayer1,CCC
-0,1,0,0,IpdPlayer1,IpdPlayer0,DDD
-1,0,1,1,IpdPlayer0,IpdPlayer1,CCC
-1,1,0,1,IpdPlayer1,IpdPlayer0,DDD
-2,0,2,0,IpdPlayer0,IpdPlayer2,CCD
-2,2,0,0,IpdPlayer2,IpdPlayer0,DDD
-3,0,2,1,IpdPlayer0,IpdPlayer2,CCC
-3,2,0,1,IpdPlayer2,IpdPlayer0,DDD
-4,0,3,0,IpdPlayer0,IpdPlayer3,CCD
-4,3,0,0,IpdPlayer3,IpdPlayer0,DDD
-5,0,3,1,IpdPlayer0,IpdPlayer3,DCC
-5,3,0,1,IpdPlayer3,IpdPlayer0,DDD
-6,0,4,2,IpdPlayer0,IpdPlayer4,DDD
-6,4,0,2,IpdPlayer4,IpdPlayer0,DDD
-7,0,4,3,IpdPlayer0,IpdPlayer4,DDD
-7,4,0,3,IpdPlayer4,IpdPlayer0,DDD"""
+                """Interaction index,Player index,Opponent index,Repetition,Player name,Opponent name,Actions
+0,0,1,0,Player0,Player1,CCC
+0,1,0,0,Player1,Player0,DDD
+1,0,1,1,Player0,Player1,CCC
+1,1,0,1,Player1,Player0,DDD
+2,0,2,0,Player0,Player2,CCD
+2,2,0,0,Player2,Player0,DDD
+3,0,2,1,Player0,Player2,CCC
+3,2,0,1,Player2,Player0,DDD
+4,0,3,0,Player0,Player3,CCD
+4,3,0,0,Player3,Player0,DDD
+5,0,3,1,Player0,Player3,DCC
+5,3,0,1,Player3,Player0,DDD
+6,0,4,2,Player0,Player4,DDD
+6,4,0,2,Player4,Player0,DDD
+7,0,4,3,Player0,Player4,DDD
+7,4,0,3,Player4,Player0,DDD"""
             )
         data = tf.analyse_cooperation_ratio(filename)
         expected_data = np.array(

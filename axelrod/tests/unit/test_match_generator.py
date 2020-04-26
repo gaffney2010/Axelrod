@@ -15,7 +15,7 @@ test_strategies = [
 ]
 test_turns = 100
 test_repetitions = 20
-test_game = axl.IpdGame()
+test_game = axl.Game()
 
 
 class TestMatchGenerator(unittest.TestCase):
@@ -40,8 +40,8 @@ class TestMatchGenerator(unittest.TestCase):
         # Check that can build a match
         players = [axl.Cooperator(), axl.Defector()]
         match_params["players"] = players
-        match = axl.IpdMatch(**match_params)
-        self.assertIsInstance(match, axl.IpdMatch)
+        match = axl.Match(**match_params)
+        self.assertIsInstance(match, axl.Match)
         self.assertEqual(len(match), test_turns)
 
     def test_build_single_match_params_with_noise(self):
@@ -62,8 +62,8 @@ class TestMatchGenerator(unittest.TestCase):
         # Check that can build a match
         players = [axl.Cooperator(), axl.Defector()]
         match_params["players"] = players
-        match = axl.IpdMatch(**match_params)
-        self.assertIsInstance(match, axl.IpdMatch)
+        match = axl.Match(**match_params)
+        self.assertIsInstance(match, axl.Match)
         self.assertEqual(len(match), test_turns)
 
     def test_build_single_match_params_with_prob_end(self):
@@ -83,8 +83,8 @@ class TestMatchGenerator(unittest.TestCase):
         # Check that can build a match
         players = [axl.Cooperator(), axl.Defector()]
         match_params["players"] = players
-        match = axl.IpdMatch(**match_params)
-        self.assertIsInstance(match, axl.IpdMatch)
+        match = axl.Match(**match_params)
+        self.assertIsInstance(match, axl.Match)
         with self.assertRaises(TypeError):
             len(match)
 
@@ -106,8 +106,8 @@ class TestMatchGenerator(unittest.TestCase):
         # Check that can build a match
         players = [axl.Cooperator(), axl.Defector()]
         match_params["players"] = players
-        match = axl.IpdMatch(**match_params)
-        self.assertIsInstance(match, axl.IpdMatch)
+        match = axl.Match(**match_params)
+        self.assertIsInstance(match, axl.Match)
         with self.assertRaises(TypeError):
             len(match)
 
@@ -129,8 +129,8 @@ class TestMatchGenerator(unittest.TestCase):
         # Check that can build a match
         players = [axl.Cooperator(), axl.Defector()]
         match_params["players"] = players
-        match = axl.IpdMatch(**match_params)
-        self.assertIsInstance(match, axl.IpdMatch)
+        match = axl.Match(**match_params)
+        self.assertIsInstance(match, axl.Match)
         self.assertIsInstance(len(match), int)
         self.assertGreater(len(match), 0)
         self.assertLessEqual(len(match), 10)
@@ -154,8 +154,8 @@ class TestMatchGenerator(unittest.TestCase):
         # Check that can build a match
         players = [axl.Cooperator(), axl.Defector()]
         match_params["players"] = players
-        match = axl.IpdMatch(**match_params)
-        self.assertIsInstance(match, axl.IpdMatch)
+        match = axl.Match(**match_params)
+        self.assertIsInstance(match, axl.Match)
         self.assertEqual(len(match), 5)
         self.assertEqual(match.match_attributes, {"length": float("inf")})
 

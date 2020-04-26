@@ -1,12 +1,12 @@
 from typing import Optional
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class APavlov2006(IpdPlayer):
+class APavlov2006(Player):
     """
     APavlov attempts to classify its opponent as one of five strategies:
     Cooperative, ALLD, STFT, PavlovD, or Random. APavlov then responds in a
@@ -33,7 +33,7 @@ class APavlov2006(IpdPlayer):
         super().__init__()
         self.opponent_class = None  # type: Optional[str]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # TFT for six rounds
         if len(self.history) < 6:
             return D if opponent.history[-1:] == [D] else C
@@ -70,7 +70,7 @@ class APavlov2006(IpdPlayer):
         return C
 
 
-class APavlov2011(IpdPlayer):
+class APavlov2011(Player):
     """
     APavlov attempts to classify its opponent as one of four strategies:
     Cooperative, ALLD, STFT, or Random. APavlov then responds in a manner
@@ -97,7 +97,7 @@ class APavlov2011(IpdPlayer):
         super().__init__()
         self.opponent_class = None  # type: Optional[str]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # TFT for six rounds
         if len(self.history) < 6:
             return D if opponent.history[-1:] == [D] else C

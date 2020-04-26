@@ -1,11 +1,11 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class Negation(IpdPlayer):
+class Negation(Player):
     """
     A player starts by cooperating or defecting randomly if it's their first move,
     then simply doing the opposite of the opponents last move thereafter.
@@ -26,7 +26,7 @@ class Negation(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Random first move
         if not self.history:
             return random_choice()

@@ -16,7 +16,7 @@ from numpy.random import choice
 
 from axelrod.strategies.sequence_player import SequencePlayer
 from .action import Action
-from .player import IpdPlayer
+from .player import Player
 from .random_ import random_choice
 
 C, D = Action.C, Action.D
@@ -70,7 +70,7 @@ def StrategyTransformerFactory(strategy_wrapper, name_prefix=None, reclassifier=
             Parameters
             ----------
             PlayerClass: A subclass of axelrodPlayer, e.g. Cooperator
-                The IpdPlayer Class to modify
+                The Player Class to modify
 
             Returns
             -------
@@ -96,7 +96,7 @@ def StrategyTransformerFactory(strategy_wrapper, name_prefix=None, reclassifier=
             # with `strategy_wrapper`
             def strategy(self, opponent):
                 if strategy_wrapper == dual_wrapper:
-                    # dual_wrapper figures out strategy as if the IpdPlayer had
+                    # dual_wrapper figures out strategy as if the Player had
                     # played the opposite actions of its current history.
                     self._history = self.history.flip_plays()
 
@@ -107,7 +107,7 @@ def StrategyTransformerFactory(strategy_wrapper, name_prefix=None, reclassifier=
 
                 if strategy_wrapper == dual_wrapper:
                     # After dual_wrapper calls the strategy, it returns
-                    # the IpdPlayer to its original state.
+                    # the Player to its original state.
                     self._history = self.history.flip_plays()
 
                 # Apply the wrapper
@@ -120,9 +120,9 @@ def StrategyTransformerFactory(strategy_wrapper, name_prefix=None, reclassifier=
             name = PlayerClass.name
             name_prefix = self.name_prefix
             if name_prefix:
-                # Modify the IpdPlayer name (class variable inherited from IpdPlayer)
+                # Modify the Player name (class variable inherited from Player)
                 new_class_name = "".join([name_prefix, PlayerClass.__name__])
-                # Modify the IpdPlayer name (class variable inherited from IpdPlayer)
+                # Modify the Player name (class variable inherited from Player)
                 name = " ".join([name_prefix, PlayerClass.name])
 
             original_classifier = copy.deepcopy(PlayerClass.classifier)  # Copy
@@ -199,7 +199,7 @@ def StrategyTransformerFactory(strategy_wrapper, name_prefix=None, reclassifier=
     return Decorator
 
 
-def player_can_be_pickled(player: IpdPlayer) -> bool:
+def player_can_be_pickled(player: Player) -> bool:
     """
     Returns True if pickle.dump(player) does not raise pickle.PicklingError.
     """
@@ -246,7 +246,7 @@ class StrategyReBuilder(object):
     that could not normally be pickled.
     """
 
-    def __call__(self, decorators: list, import_name: str, module_name: str) -> IpdPlayer:
+    def __call__(self, decorators: list, import_name: str, module_name: str) -> Player:
 
         module_ = import_module(module_name)
         import_class = getattr(module_, import_name)
@@ -281,11 +281,11 @@ def generic_strategy_wrapper(player, opponent, proposed_action, *args, **kwargs)
 
     Parameters
     ----------
-    player: IpdPlayer object or subclass (self)
-    opponent: IpdPlayer object or subclass
+    player: Player object or subclass (self)
+    opponent: Player object or subclass
     proposed_action: an axelrod.Action, C or D
         The proposed action by the wrapped strategy
-        proposed_action = IpdPlayer.strategy(...)
+        proposed_action = Player.strategy(...)
     args, kwargs:
         Any additional arguments that you need.
 
@@ -310,7 +310,7 @@ def flip_wrapper(player, opponent, action):
 FlipTransformer = StrategyTransformerFactory(flip_wrapper, name_prefix="Flipped")
 
 
-def dual_wrapper(player, opponent: IpdPlayer, proposed_action: Action) -> Action:
+def dual_wrapper(player, opponent: Player, proposed_action: Action) -> Action:
     """Wraps the players strategy function to produce the Dual.
 
     The Dual of a strategy will return the exact opposite set of moves to the
@@ -321,8 +321,8 @@ def dual_wrapper(player, opponent: IpdPlayer, proposed_action: Action) -> Action
 
     Parameters
     ----------
-    player: IpdPlayer object or subclass (self)
-    opponent: IpdPlayer object or subclass
+    player: Player object or subclass (self)
+    opponent: Player object or subclass
     proposed_action: axelrod.Action, C or D
         The proposed action by the wrapped strategy
 
@@ -588,8 +588,8 @@ def joss_ann_wrapper(player, opponent, proposed_action, probability):
     Parameters
     ----------
 
-    player: IpdPlayer object or subclass (self)
-    opponent: IpdPlayer object or subclass
+    player: Player object or subclass (self)
+    opponent: Player object or subclass
     proposed_action: axelrod.Action, C or D
         The proposed action by the wrapped strategy
     probability: tuple

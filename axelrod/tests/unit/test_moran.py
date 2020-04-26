@@ -169,7 +169,7 @@ class TestMoranProcess(unittest.TestCase):
         # Possible for Cooperator to become fixed when using a different game
         p1, p2 = axl.Cooperator(), axl.Defector()
         axl.seed(0)
-        game = axl.IpdGame(r=4, p=2, s=1, t=6)
+        game = axl.Game(r=4, p=2, s=1, t=6)
         mp = axl.MoranProcess((p1, p2), turns=5, game=game)
         populations = mp.play()
         self.assertEqual(mp.winning_strategy_name, str(p1))

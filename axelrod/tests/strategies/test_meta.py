@@ -15,7 +15,7 @@ class TestMetaPlayer(TestPlayer):
     dictionary and the reset methods. Inherit from this class just as you would
     the TestPlayer class."""
 
-    name = "Meta IpdPlayer"
+    name = "Meta Player"
     player = axl.MetaPlayer
     expected_classifier = {
         "memory_depth": float("inf"),
@@ -86,7 +86,7 @@ class TestMetaPlayer(TestPlayer):
             player2.reset()
             for p in [player1, player2]:
                 axl.seed(seed)
-                m = axl.IpdMatch((p, op), turns=turns)
+                m = axl.Match((p, op), turns=turns)
                 m.play()
             self.assertEqual(len(player1.history), turns)
             self.assertEqual(player1.history, player2.history)
@@ -107,7 +107,7 @@ class TestMetaMajority(TestMetaPlayer):
 
     def test_strategy(self):
         P1 = axl.MetaMajority()
-        P2 = axl.IpdPlayer()
+        P2 = axl.Player()
 
         # With more cooperators on the team than defectors, we should cooperate.
         P1.team = [axl.Cooperator(), axl.Cooperator(), axl.Defector()]
@@ -138,7 +138,7 @@ class TestMetaMinority(TestMetaPlayer):
 
     def test_strategy(self):
         P1 = axl.MetaMinority()
-        P2 = axl.IpdPlayer()
+        P2 = axl.Player()
 
         # With more cooperators on the team, we should defect.
         P1.team = [axl.Cooperator(), axl.Cooperator(), axl.Defector()]
@@ -164,7 +164,7 @@ class TestNiceMetaWinner(TestMetaPlayer):
 
     def test_strategy(self):
         P1 = axl.NiceMetaWinner(team=[axl.Cooperator, axl.Defector])
-        P2 = axl.IpdPlayer()
+        P2 = axl.Player()
 
         # This meta player will simply choose the strategy with the highest
         # current score.

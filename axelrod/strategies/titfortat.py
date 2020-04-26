@@ -1,12 +1,12 @@
 from axelrod.action import Action, actions_to_str
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 from axelrod.strategy_transformers import FinalTransformer, TrackHistoryTransformer
 
 C, D = Action.C, Action.D
 
 
-class TitForTat(IpdPlayer):
+class TitForTat(Player):
     """
     A player starts by cooperating and then mimics the previous action of the
     opponent.
@@ -36,7 +36,7 @@ class TitForTat(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """This is the actual strategy"""
         # First move
         if not self.history:
@@ -47,7 +47,7 @@ class TitForTat(IpdPlayer):
         return C
 
 
-class TitFor2Tats(IpdPlayer):
+class TitFor2Tats(Player):
     """A player starts by cooperating and then defects only after two defects by
     opponent.
 
@@ -73,11 +73,11 @@ class TitFor2Tats(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         return D if opponent.history[-2:] == [D, D] else C
 
 
-class TwoTitsForTat(IpdPlayer):
+class TwoTitsForTat(Player):
     """A player starts by cooperating and replies to each defect by two
     defections.
 
@@ -98,11 +98,11 @@ class TwoTitsForTat(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         return D if D in opponent.history[-2:] else C
 
 
-class DynamicTwoTitsForTat(IpdPlayer):
+class DynamicTwoTitsForTat(Player):
     """
     A player starts by cooperating and then punishes its opponent's
     defections with defections, but with a dynamic bias towards cooperating
@@ -139,7 +139,7 @@ class DynamicTwoTitsForTat(IpdPlayer):
             return C
 
 
-class Bully(IpdPlayer):
+class Bully(Player):
     """A player that behaves opposite to Tit For Tat, including first move.
 
     Starts by defecting and then does the opposite of opponent's previous move.
@@ -164,11 +164,11 @@ class Bully(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         return C if opponent.history[-1:] == [D] else D
 
 
-class SneakyTitForTat(IpdPlayer):
+class SneakyTitForTat(Player):
     """Tries defecting once and repents if punished.
 
     Names:
@@ -187,7 +187,7 @@ class SneakyTitForTat(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) < 2:
             return C
         if D not in opponent.history:
@@ -197,7 +197,7 @@ class SneakyTitForTat(IpdPlayer):
         return opponent.history[-1]
 
 
-class SuspiciousTitForTat(IpdPlayer):
+class SuspiciousTitForTat(Player):
     """A variant of Tit For Tat that starts off with a defection.
 
     Names:
@@ -218,11 +218,11 @@ class SuspiciousTitForTat(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         return C if opponent.history[-1:] == [C] else D
 
 
-class AntiTitForTat(IpdPlayer):
+class AntiTitForTat(Player):
     """A strategy that plays the opposite of the opponents previous move.
     This is similar to Bully, except that the first move is cooperation.
 
@@ -244,11 +244,11 @@ class AntiTitForTat(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         return D if opponent.history[-1:] == [C] else C
 
 
-class HardTitForTat(IpdPlayer):
+class HardTitForTat(Player):
     """A variant of Tit For Tat that uses a longer history for retaliation.
 
     Names:
@@ -268,7 +268,7 @@ class HardTitForTat(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         # Cooperate on the first move
         if not opponent.history:
             return C
@@ -279,7 +279,7 @@ class HardTitForTat(IpdPlayer):
         return C
 
 
-class HardTitFor2Tats(IpdPlayer):
+class HardTitFor2Tats(Player):
     """A variant of Tit For Two Tats that uses a longer history for
     retaliation.
 
@@ -300,7 +300,7 @@ class HardTitFor2Tats(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         # Cooperate on the first move
         if not opponent.history:
             return C
@@ -312,7 +312,7 @@ class HardTitFor2Tats(IpdPlayer):
         return C
 
 
-class OmegaTFT(IpdPlayer):
+class OmegaTFT(Player):
     """OmegaTFT modifies Tit For Tat in two ways:
        - checks for deadlock loops of alternating rounds of (C, D) and (D, C),
        and attempting to break them
@@ -343,7 +343,7 @@ class OmegaTFT(IpdPlayer):
         self.randomness_counter = 0
         self.deadlock_counter = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Cooperate on the first move
         if not self.history:
             return C
@@ -384,7 +384,7 @@ class OmegaTFT(IpdPlayer):
         return move
 
 
-class OriginalGradual(IpdPlayer):
+class OriginalGradual(Player):
     """
     A player that punishes defections with a growing number of defections
     but after punishing for `punishment_limit` number of times enters a calming
@@ -423,7 +423,7 @@ class OriginalGradual(IpdPlayer):
         self.punishment_count = 0
         self.punishment_limit = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         if self.calming:
             self.calming = False
@@ -448,7 +448,7 @@ class OriginalGradual(IpdPlayer):
         return C
 
 
-class Gradual(IpdPlayer):
+class Gradual(Player):
     """
     Similar to OriginalGradual, this is a player that punishes defections with a
     growing number of defections but after punishing for `punishment_limit`
@@ -489,7 +489,7 @@ class Gradual(IpdPlayer):
         self.calm_count = 0
         self.punish_count = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         if len(self.history) == 0:
             return C
@@ -510,7 +510,7 @@ class Gradual(IpdPlayer):
 
 
 @TrackHistoryTransformer(name_prefix=None)
-class ContriteTitForTat(IpdPlayer):
+class ContriteTitForTat(Player):
     """
     A player that corresponds to Tit For Tat if there is no noise. In the case
     of a noisy match: if the opponent defects as a result of a noisy defection
@@ -538,7 +538,7 @@ class ContriteTitForTat(IpdPlayer):
         self.contrite = False
         self._recorded_history = []
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         if not opponent.history:
             return C
@@ -556,7 +556,7 @@ class ContriteTitForTat(IpdPlayer):
         return opponent.history[-1]
 
 
-class AdaptiveTitForTat(IpdPlayer):
+class AdaptiveTitForTat(Player):
     """ATFT - Adaptive Tit For Tat (Basic Model)
 
     Algorithm
@@ -606,7 +606,7 @@ class AdaptiveTitForTat(IpdPlayer):
         self.rate = rate
         self.world = rate
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         if len(opponent.history) == 0:
             return C
@@ -622,7 +622,7 @@ class AdaptiveTitForTat(IpdPlayer):
         return D
 
 
-class SpitefulTitForTat(IpdPlayer):
+class SpitefulTitForTat(Player):
     """
     A player starts by cooperating and then mimics the previous action of the
     opponent until opponent defects twice in a row, at which point player
@@ -648,7 +648,7 @@ class SpitefulTitForTat(IpdPlayer):
         super().__init__()
         self.retaliating = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # First move
         if not self.history:
             return C
@@ -665,7 +665,7 @@ class SpitefulTitForTat(IpdPlayer):
             return C
 
 
-class SlowTitForTwoTats2(IpdPlayer):
+class SlowTitForTwoTats2(Player):
     """
     A player plays C twice, then if the opponent plays the same move twice,
     plays that move, otherwise plays previous move.
@@ -686,7 +686,7 @@ class SlowTitForTwoTats2(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         # Start with two cooperations
         if len(self.history) < 2:
@@ -701,7 +701,7 @@ class SlowTitForTwoTats2(IpdPlayer):
 
 
 @FinalTransformer((D,), name_prefix=None)
-class Alexei(IpdPlayer):
+class Alexei(Player):
     """
     Plays similar to Tit-for-Tat, but always defect on last turn.
 
@@ -721,7 +721,7 @@ class Alexei(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not self.history:
             return C
         if opponent.history[-1] == D:
@@ -730,7 +730,7 @@ class Alexei(IpdPlayer):
 
 
 @FinalTransformer((D,), name_prefix=None)
-class EugineNier(IpdPlayer):
+class EugineNier(Player):
     """
     Plays similar to Tit-for-Tat, but with two conditions:
     1) Always Defect on Last Move
@@ -756,7 +756,7 @@ class EugineNier(IpdPlayer):
         super().__init__()
         self.is_defector = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not self.history:
             return C
         if not (self.is_defector) and opponent.defections >= 5:
@@ -766,7 +766,7 @@ class EugineNier(IpdPlayer):
         return opponent.history[-1]
 
 
-class NTitsForMTats(IpdPlayer):
+class NTitsForMTats(Player):
     """
     A parameterizable Tit-for-Tat,
     The arguments are:
@@ -812,7 +812,7 @@ class NTitsForMTats(IpdPlayer):
         self.classifier["memory_depth"] = max([M, N])
         self.retaliate_count = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # if opponent defected consecutively M times, start the retaliation
         if not self.M or opponent.history[-self.M :].count(D) == self.M:
             self.retaliate_count = self.N
@@ -823,7 +823,7 @@ class NTitsForMTats(IpdPlayer):
 
 
 @FinalTransformer((D,), name_prefix=None)
-class Michaelos(IpdPlayer):
+class Michaelos(Player):
     """
     Plays similar to Tit-for-Tat with two exceptions:
     1) Defect on last turn.
@@ -851,7 +851,7 @@ class Michaelos(IpdPlayer):
         super().__init__()
         self.is_defector = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not self.history:
             return C
         if self.is_defector:
@@ -867,7 +867,7 @@ class Michaelos(IpdPlayer):
         return opponent.history[-1]
 
 
-class RandomTitForTat(IpdPlayer):
+class RandomTitForTat(Player):
     """
     A player starts by cooperating and then follows by copying its
     opponent (tit for tat style).  From then on the player
@@ -904,7 +904,7 @@ class RandomTitForTat(IpdPlayer):
         if p in [0, 1]:
             self.classifier["stochastic"] = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """This is the actual strategy"""
         if not self.history:
             return C

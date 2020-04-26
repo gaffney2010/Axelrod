@@ -53,9 +53,9 @@ def inspect_strategy(inspector, opponent):
 
     Parameters
     ----------
-    inspector: IpdPlayer
+    inspector: Player
         The player doing the inspecting
-    opponent: IpdPlayer
+    opponent: Player
         The player being inspected
 
     Returns
@@ -82,9 +82,9 @@ def _limited_simulate_play(player_1, player_2, h1):
 
     Parameters
     ----------
-    player_1: IpdPlayer
+    player_1: Player
         The player whose move is already known.
-    player_2: IpdPlayer
+    player_2: Player
         The player the we want to inspect.
     h1: Action
         The next action for first player.
@@ -99,9 +99,9 @@ def simulate_match(player_1, player_2, strategy, rounds=10):
 
     Parameters
     ----------
-    player_1: IpdPlayer
+    player_1: Player
         The player that will have a constant strategy.
-    player_2: IpdPlayer
+    player_2: Player
         The player we want to simulate.
     strategy: Action
         The constant strategy to use for first player.
@@ -117,12 +117,12 @@ def _calculate_scores(p1, p2, game):
 
     Parameters
     ----------
-    p1: IpdPlayer
+    p1: Player
         The first player.
-    p2: IpdPlayer
+    p2: Player
         The second player.
-    game: IpdGame
-        IpdGame object used to score rounds in the players' histories.
+    game: Game
+        Game object used to score rounds in the players' histories.
 
     Returns
     -------
@@ -142,12 +142,12 @@ def look_ahead(player_1, player_2, game, rounds=10):
 
     Parameters
     ----------
-    player_1: IpdPlayer
+    player_1: Player
         The player that will look ahead.
-    player_2: IpdPlayer
+    player_2: Player
         The opponent that will be inspected.
-    game: IpdGame
-        The IpdGame object used to score rounds.
+    game: Game
+        The Game object used to score rounds.
     rounds: int
         The number of rounds to look ahead.
 

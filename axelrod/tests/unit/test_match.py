@@ -17,7 +17,7 @@ class TestMatch(unittest.TestCase):
     @example(turns=5, game=axl.DefaultGame)
     def test_init(self, turns, game):
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), turns, game=game)
+        match = axl.Match((p1, p2), turns, game=game)
         self.assertEqual(match.result, [])
         self.assertEqual(match.players, [p1, p2])
         self.assertEqual(match.turns, turns)
@@ -31,7 +31,7 @@ class TestMatch(unittest.TestCase):
     @given(prob_end=floats(min_value=0, max_value=1), game=games())
     def test_init_with_prob_end(self, prob_end, game):
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), prob_end=prob_end, game=game)
+        match = axl.Match((p1, p2), prob_end=prob_end, game=game)
         self.assertEqual(match.result, [])
         self.assertEqual(match.players, [p1, p2])
         self.assertEqual(match.turns, float("inf"))
@@ -49,7 +49,7 @@ class TestMatch(unittest.TestCase):
     )
     def test_init_with_prob_end_and_turns(self, turns, prob_end, game):
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), turns=turns, prob_end=prob_end, game=game)
+        match = axl.Match((p1, p2), turns=turns, prob_end=prob_end, game=game)
         self.assertEqual(match.result, [])
         self.assertEqual(match.players, [p1, p2])
         self.assertEqual(match.turns, turns)
@@ -62,7 +62,7 @@ class TestMatch(unittest.TestCase):
 
     def test_default_init(self):
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2))
+        match = axl.Match((p1, p2))
         self.assertEqual(match.result, [])
         self.assertEqual(match.players, [p1, p2])
         self.assertEqual(match.turns, axl.DEFAULT_TURNS)
@@ -81,7 +81,7 @@ class TestMatch(unittest.TestCase):
         outcomes
         """
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), prob_end=0.5)
+        match = axl.Match((p1, p2), prob_end=0.5)
         expected_lengths = [3, 1, 5]
         for seed, expected_length in zip(range(3), expected_lengths):
             axl.seed(seed)
@@ -97,7 +97,7 @@ class TestMatch(unittest.TestCase):
     def test_non_default_attributes(self, turns, game):
         p1, p2 = axl.Cooperator(), axl.Cooperator()
         match_attributes = {"length": 500, "game": game, "noise": 0.5}
-        match = axl.IpdMatch(
+        match = axl.Match(
             (p1, p2), turns, game=game, match_attributes=match_attributes
         )
         self.assertEqual(match.players[0].match_attributes["length"], 500)
@@ -107,7 +107,7 @@ class TestMatch(unittest.TestCase):
     @example(turns=5)
     def test_len(self, turns):
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), turns)
+        match = axl.Match((p1, p2), turns)
         self.assertEqual(len(match), turns)
 
     def test_len_error(self):
@@ -115,7 +115,7 @@ class TestMatch(unittest.TestCase):
         Length is not defined if it is infinite.
         """
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), prob_end=0.5)
+        match = axl.Match((p1, p2), prob_end=0.5)
         with self.assertRaises(TypeError):
             len(match)
 
@@ -125,14 +125,14 @@ class TestMatch(unittest.TestCase):
         assume(0 < p < 1)
 
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), 5)
+        match = axl.Match((p1, p2), 5)
         self.assertFalse(match._stochastic)
 
-        match = axl.IpdMatch((p1, p2), 5, noise=p)
+        match = axl.Match((p1, p2), 5, noise=p)
         self.assertTrue(match._stochastic)
 
         p1 = axl.Random()
-        match = axl.IpdMatch((p1, p2), 5)
+        match = axl.Match((p1, p2), 5)
         self.assertTrue(match._stochastic)
 
     @given(p=floats(min_value=0, max_value=1))
@@ -141,25 +141,25 @@ class TestMatch(unittest.TestCase):
         assume(0 < p < 1)
 
         p1, p2 = axl.Cooperator(), axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), 5, noise=p)
+        match = axl.Match((p1, p2), 5, noise=p)
         self.assertFalse(match._cache_update_required)
 
         cache = DeterministicCache()
         cache.mutable = False
-        match = axl.IpdMatch((p1, p2), 5, deterministic_cache=cache)
+        match = axl.Match((p1, p2), 5, deterministic_cache=cache)
         self.assertFalse(match._cache_update_required)
 
-        match = axl.IpdMatch((p1, p2), 5)
+        match = axl.Match((p1, p2), 5)
         self.assertTrue(match._cache_update_required)
 
         p1 = axl.Random()
-        match = axl.IpdMatch((p1, p2), 5)
+        match = axl.Match((p1, p2), 5)
         self.assertFalse(match._cache_update_required)
 
     def test_play(self):
         cache = DeterministicCache()
         players = (axl.Cooperator(), axl.Defector())
-        match = axl.IpdMatch(players, 3, deterministic_cache=cache)
+        match = axl.Match(players, 3, deterministic_cache=cache)
         expected_result = [(C, D), (C, D), (C, D)]
         self.assertEqual(match.play(), expected_result)
         self.assertEqual(
@@ -169,7 +169,7 @@ class TestMatch(unittest.TestCase):
         # a deliberately incorrect result so we can tell it came from the cache
         expected_result = [(C, C), (D, D), (D, C), (C, C), (C, D)]
         cache[(axl.Cooperator(), axl.Defector())] = expected_result
-        match = axl.IpdMatch(players, 3, deterministic_cache=cache)
+        match = axl.Match(players, 3, deterministic_cache=cache)
         self.assertEqual(match.play(), expected_result[:3])
 
     def test_cache_grows(self):
@@ -180,7 +180,7 @@ class TestMatch(unittest.TestCase):
         """
         cache = DeterministicCache()
         players = (axl.Cooperator(), axl.Defector())
-        match = axl.IpdMatch(players, 3, deterministic_cache=cache)
+        match = axl.Match(players, 3, deterministic_cache=cache)
         expected_result_5_turn = [(C, D), (C, D), (C, D), (C, D), (C, D)]
         expected_result_3_turn = [(C, D), (C, D), (C, D)]
         self.assertEqual(match.play(), expected_result_3_turn)
@@ -200,7 +200,7 @@ class TestMatch(unittest.TestCase):
         """
         cache = DeterministicCache()
         players = (axl.Cooperator(), axl.Defector())
-        match = axl.IpdMatch(players, 5, deterministic_cache=cache)
+        match = axl.Match(players, 5, deterministic_cache=cache)
         expected_result_5_turn = [(C, D), (C, D), (C, D), (C, D), (C, D)]
         expected_result_3_turn = [(C, D), (C, D), (C, D)]
         self.assertEqual(match.play(), expected_result_5_turn)
@@ -215,7 +215,7 @@ class TestMatch(unittest.TestCase):
     def test_scores(self):
         player1 = axl.TitForTat()
         player2 = axl.Defector()
-        match = axl.IpdMatch((player1, player2), 3)
+        match = axl.Match((player1, player2), 3)
         self.assertEqual(match.scores(), [])
         match.play()
         self.assertEqual(match.scores(), [(0, 5), (1, 1), (1, 1)])
@@ -224,12 +224,12 @@ class TestMatch(unittest.TestCase):
         player1 = axl.TitForTat()
         player2 = axl.Defector()
 
-        match = axl.IpdMatch((player1, player2), 3)
+        match = axl.Match((player1, player2), 3)
         self.assertEqual(match.final_score(), None)
         match.play()
         self.assertEqual(match.final_score(), (2, 7))
 
-        match = axl.IpdMatch((player2, player1), 3)
+        match = axl.Match((player2, player1), 3)
         self.assertEqual(match.final_score(), None)
         match.play()
         self.assertEqual(match.final_score(), (7, 2))
@@ -239,12 +239,12 @@ class TestMatch(unittest.TestCase):
         player1 = axl.TitForTat()
         player2 = axl.Defector()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.final_score_per_turn(), None)
         match.play()
         self.assertEqual(match.final_score_per_turn(), (2 / turns, 7 / turns))
 
-        match = axl.IpdMatch((player2, player1), turns)
+        match = axl.Match((player2, player1), turns)
         self.assertEqual(match.final_score_per_turn(), None)
         match.play()
         self.assertEqual(match.final_score_per_turn(), (7 / turns, 2 / turns))
@@ -253,18 +253,18 @@ class TestMatch(unittest.TestCase):
         player1 = axl.TitForTat()
         player2 = axl.Defector()
 
-        match = axl.IpdMatch((player1, player2), 3)
+        match = axl.Match((player1, player2), 3)
         self.assertEqual(match.winner(), None)
         match.play()
         self.assertEqual(match.winner(), player2)
 
-        match = axl.IpdMatch((player2, player1), 3)
+        match = axl.Match((player2, player1), 3)
         self.assertEqual(match.winner(), None)
         match.play()
         self.assertEqual(match.winner(), player2)
 
         player1 = axl.Defector()
-        match = axl.IpdMatch((player1, player2), 3)
+        match = axl.Match((player1, player2), 3)
         self.assertEqual(match.winner(), None)
         match.play()
         self.assertEqual(match.winner(), False)
@@ -274,7 +274,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Cooperator()
         player2 = axl.Alternator()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.cooperation(), None)
         match.play()
         self.assertEqual(match.cooperation(), (3, 2))
@@ -282,7 +282,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Alternator()
         player2 = axl.Defector()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.cooperation(), None)
         match.play()
         self.assertEqual(match.cooperation(), (2, 0))
@@ -292,7 +292,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Cooperator()
         player2 = axl.Alternator()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.normalised_cooperation(), None)
         match.play()
         self.assertEqual(match.normalised_cooperation(), (3 / turns, 2 / turns))
@@ -300,7 +300,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Alternator()
         player2 = axl.Defector()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.normalised_cooperation(), None)
         match.play()
         self.assertEqual(match.normalised_cooperation(), (2 / turns, 0 / turns))
@@ -310,7 +310,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Cooperator()
         player2 = axl.Alternator()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.state_distribution(), None)
 
         match.play()
@@ -320,7 +320,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Alternator()
         player2 = axl.Defector()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.state_distribution(), None)
 
         match.play()
@@ -332,7 +332,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Cooperator()
         player2 = axl.Alternator()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.normalised_state_distribution(), None)
 
         match.play()
@@ -342,7 +342,7 @@ class TestMatch(unittest.TestCase):
         player1 = axl.Alternator()
         player2 = axl.Defector()
 
-        match = axl.IpdMatch((player1, player2), turns)
+        match = axl.Match((player1, player2), turns)
         self.assertEqual(match.normalised_state_distribution(), None)
 
         match.play()
@@ -351,7 +351,7 @@ class TestMatch(unittest.TestCase):
 
     def test_sparklines(self):
         players = (axl.Cooperator(), axl.Alternator())
-        match = axl.IpdMatch(players, 4)
+        match = axl.Match(players, 4)
         match.play()
         expected_sparklines = "████\n█ █ "
         self.assertEqual(match.sparklines(), expected_sparklines)

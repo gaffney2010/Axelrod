@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Forgiver(IpdPlayer):
+class Forgiver(Player):
     """
     A player starts by cooperating however will defect if at any point
     the opponent has defected more than 10 percent of the time
@@ -25,7 +25,7 @@ class Forgiver(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Begins by playing C, then plays D if the opponent has defected more
         than 10 percent of the time.
@@ -35,7 +35,7 @@ class Forgiver(IpdPlayer):
         return C
 
 
-class ForgivingTitForTat(IpdPlayer):
+class ForgivingTitForTat(Player):
     """
     A player starts by cooperating however will defect if at any point, the
     opponent has defected more than 10 percent of the time, and their most
@@ -57,7 +57,7 @@ class ForgivingTitForTat(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Begins by playing C, then plays D if the opponent has defected more than
         10 percent of the time and their most recent decision was defect.

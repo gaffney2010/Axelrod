@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Resurrection(IpdPlayer):
+class Resurrection(Player):
     """
     A player starts by cooperating and defects if the number of rounds
     played by the player is greater than five and the last five rounds
@@ -29,7 +29,7 @@ class Resurrection(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0:
             return C
         if len(self.history) >= 5 and self.history[-5:] == [D, D, D, D, D]:
@@ -38,7 +38,7 @@ class Resurrection(IpdPlayer):
             return opponent.history[-1]
 
 
-class DoubleResurrection(IpdPlayer):
+class DoubleResurrection(Player):
     """
     A player starts by cooperating and defects if the number of rounds
     played by the player is greater than five and the last five rounds
@@ -62,7 +62,7 @@ class DoubleResurrection(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0:
             return C
         if len(self.history) >= 5 and self.history[-5:] == [C, C, C, C, C]:

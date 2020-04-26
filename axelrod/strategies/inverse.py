@@ -1,11 +1,11 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class Inverse(IpdPlayer):
+class Inverse(Player):
     """A player who defects with a probability that diminishes relative to how
     long ago the opponent defected.
 
@@ -26,7 +26,7 @@ class Inverse(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         """Looks at opponent history to see if they have defected.
 
         If so, player defection is inversely proportional to when this occurred.

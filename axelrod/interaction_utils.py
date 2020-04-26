@@ -4,7 +4,7 @@ form:
 
     [(C, D), (D, C),...]
 
-This is used by both the IpdMatch class and the ResultSet class which analyse
+This is used by both the Match class and the ResultSet class which analyse
 interactions.
 """
 from collections import Counter, defaultdict
@@ -13,7 +13,7 @@ import pandas as pd
 import tqdm
 from axelrod.action import Action, str_to_actions
 
-from .game import IpdGame
+from .game import Game
 
 C, D = Action.C, Action.D
 
@@ -21,7 +21,7 @@ C, D = Action.C, Action.D
 def compute_scores(interactions, game=None):
     """Returns the scores of a given set of interactions."""
     if not game:
-        game = IpdGame()
+        game = Game()
     return [game.score(plays) for plays in interactions]
 
 
@@ -53,7 +53,7 @@ def compute_final_score_per_turn(interactions, game=None):
 
 
 def compute_winner_index(interactions, game=None):
-    """Returns the index of the winner of the IpdMatch"""
+    """Returns the index of the winner of the Match"""
     scores = compute_final_score(interactions, game)
 
     if scores is not None:

@@ -1,11 +1,11 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class WorseAndWorse(IpdPlayer):
+class WorseAndWorse(Player):
     """
     Defects with probability of 'current turn / 1000'. Therefore
     it is more and more likely to defect as the round goes on.
@@ -28,13 +28,13 @@ class WorseAndWorse(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         current_round = len(self.history) + 1
         probability = 1 - current_round / 1000
         return random_choice(probability)
 
 
-class KnowledgeableWorseAndWorse(IpdPlayer):
+class KnowledgeableWorseAndWorse(Player):
     """
     This strategy is based on 'Worse And Worse' but will defect with probability
     of 'current turn / total no. of turns'.
@@ -54,14 +54,14 @@ class KnowledgeableWorseAndWorse(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         current_round = len(self.history) + 1
         expected_length = self.match_attributes["length"]
         probability = 1 - current_round / expected_length
         return random_choice(probability)
 
 
-class WorseAndWorse2(IpdPlayer):
+class WorseAndWorse2(Player):
     """
     Plays as tit for tat during the first 20 moves.
     Then defects with probability (current turn - 20) / current turn.
@@ -82,7 +82,7 @@ class WorseAndWorse2(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         current_round = len(self.history) + 1
 
         if current_round == 1:
@@ -94,7 +94,7 @@ class WorseAndWorse2(IpdPlayer):
             return random_choice(probability)
 
 
-class WorseAndWorse3(IpdPlayer):
+class WorseAndWorse3(Player):
     """
     Cooperates in the first turn.
     Then defects with probability no. of opponent defects / (current turn - 1).
@@ -116,7 +116,7 @@ class WorseAndWorse3(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         current_round = len(self.history) + 1
 
         if current_round == 1:

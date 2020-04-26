@@ -410,7 +410,7 @@ class TestGrofman(TestPlayer):
 
         # Test to make sure logic matches Fortran (discrepancy found 8/23/2017)
         opponent = axl.AntiTitForTat()
-        # Actions come from a match run by Axelrod Fortran using IpdPlayer('k86r')
+        # Actions come from a match run by Axelrod Fortran using Player('k86r')
         actions = [
             (C, C),
             (C, D),
@@ -1157,7 +1157,7 @@ class TestHarrington(TestPlayer):
         expected_actions += [(D, C)]
         random.seed(10)
         player = self.player()
-        match = axl.IpdMatch((player, axl.Random()), turns=len(expected_actions))
+        match = axl.Match((player, axl.Random()), turns=len(expected_actions))
         # The history matrix will be [[0, 2], [5, 6], [3, 6], [4, 2]]
         actions = match.play()
         self.assertEqual(actions, expected_actions)

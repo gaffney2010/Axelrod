@@ -1,12 +1,12 @@
 from typing import List
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Handshake(IpdPlayer):
+class Handshake(Player):
     """Starts with C, D. If the opponent plays the same way, cooperate forever,
     else defect forever.
 
@@ -32,7 +32,7 @@ class Handshake(IpdPlayer):
             initial_plays = [C, D]
         self.initial_plays = initial_plays
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Begin by playing the sequence C, D
         index = len(self.history)
         if index < len(self.initial_plays):

@@ -8,7 +8,7 @@ import axelrod as axl
 class TestEcosystem(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cooperators = axl.IpdTournament(
+        cooperators = axl.Tournament(
             players=[
                 axl.Cooperator(),
                 axl.Cooperator(),
@@ -16,7 +16,7 @@ class TestEcosystem(unittest.TestCase):
                 axl.Cooperator(),
             ]
         )
-        defector_wins = axl.IpdTournament(
+        defector_wins = axl.Tournament(
             players=[
                 axl.Cooperator(),
                 axl.Cooperator(),

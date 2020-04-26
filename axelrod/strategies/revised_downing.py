@@ -3,11 +3,11 @@ Revised Downing implemented from the Fortran source code for the second of
 Axelrod's tournaments.
 """
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
-class RevisedDowning(IpdPlayer):
+class RevisedDowning(Player):
     """
     Strategy submitted to Axelrod's second tournament by Leslie Downing.
     (K59R).
@@ -44,7 +44,7 @@ class RevisedDowning(IpdPlayer):
         self.total_C = 0  # note the same as self.cooperations
         self.total_D = 0  # note the same as self.defections
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         round_number = len(self.history) + 1
 
         if round_number == 1:

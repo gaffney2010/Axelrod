@@ -5,7 +5,7 @@ import numpy.random as random
 from numpy.random import choice
 from axelrod.action import Action
 from axelrod.evolvable_player import EvolvablePlayer, InsufficientParametersError, copy_lists
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 actions = (C, D)
@@ -92,10 +92,10 @@ class SimpleFSM(object):
         return len(set(state for state, action in self._state_transitions))
 
 
-class FSMPlayer(IpdPlayer):
+class FSMPlayer(Player):
     """Abstract base class for finite state machine players."""
 
-    name = "FSM IpdPlayer"
+    name = "FSM Player"
 
     classifier = {
         "memory_depth": 1,
@@ -118,7 +118,7 @@ class FSMPlayer(IpdPlayer):
         self.initial_action = initial_action
         self.fsm = SimpleFSM(transitions, initial_state)
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0:
             return self.initial_action
         else:

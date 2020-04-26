@@ -6,13 +6,13 @@ optimising them.
 
 from axelrod._strategy_utils import inspect_strategy
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class Geller(IpdPlayer):
+class Geller(Player):
     """Observes what the player will do in the next round and adjust.
 
     If unable to do this: will play randomly.
@@ -54,7 +54,7 @@ class Geller(IpdPlayer):
         """Foils _strategy_utils.inspect_strategy and _strategy_utils.look_ahead"""
         return random_choice(0.5)
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Look at what the opponent will play in the next round and choose a strategy
         that gives the least jail time, which is is equivalent to playing the same

@@ -5,7 +5,7 @@ from numpy.random import choice
 
 from axelrod.action import Action
 from axelrod.classifier import Classifiers
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.strategies import TitForTat
 from axelrod.strategy_transformers import NiceTransformer
 from ._strategies import all_strategies
@@ -25,16 +25,16 @@ ordinary_strategies = [s for s in all_strategies if Classifiers.obey_axelrod(s()
 C, D = Action.C, Action.D
 
 
-class MetaPlayer(IpdPlayer):
+class MetaPlayer(Player):
     """
     A generic player that has its own team of players.
 
     Names:
 
-    - Meta IpdPlayer: Original name by Karol Langner
+    - Meta Player: Original name by Karol Langner
     """
 
-    name = "Meta IpdPlayer"
+    name = "Meta Player"
     classifier = {
         "memory_depth": float("inf"),  # Long memory
         "stochastic": True,
@@ -623,7 +623,7 @@ class MemoryDecay(MetaPlayer):
         loss_value: float = -2,
         gain_value: float = 1,
         memory: list = None,
-        start_strategy: IpdPlayer = TitForTat,
+        start_strategy: Player = TitForTat,
         start_strategy_duration: int = 15,
     ):
         super().__init__(team=[start_strategy])
@@ -640,7 +640,7 @@ class MemoryDecay(MetaPlayer):
         self.gloss_values = None
 
     def __repr__(self):
-        return IpdPlayer.__repr__(self)
+        return Player.__repr__(self)
 
     def gain_loss_translate(self):
         """

@@ -5,7 +5,7 @@ results as input. That means no matches are run by the ecosystem, and a
 tournament needs to happen before it is created. For example:
 
 players = [axelrod.Cooperator(), axlerod.Defector()]
-tournament = axelrod.IpdTournament(players=players)
+tournament = axelrod.Tournament(players=players)
 results = tournament.play()
 ecosystem = axelrod.Ecosystem(results)
 ecosystem.reproduce(100)

@@ -1,12 +1,12 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.strategy_transformers import FinalTransformer
 
 C, D = Action.C, Action.D
 
 
 @FinalTransformer((D, D), name_prefix=None)  # End with two defections
-class BackStabber(IpdPlayer):
+class BackStabber(Player):
     """
     Forgives the first 3 defections but on the fourth
     will defect forever. Defects on the last 2 rounds unconditionally.
@@ -27,12 +27,12 @@ class BackStabber(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         return _backstabber_strategy(opponent)
 
 
 @FinalTransformer((D, D), name_prefix=None)  # End with two defections
-class DoubleCrosser(IpdPlayer):
+class DoubleCrosser(Player):
     """
     Forgives the first 3 defections but on the fourth
     will defect forever. Defects on the last 2 rounds unconditionally.
@@ -57,13 +57,13 @@ class DoubleCrosser(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if _opponent_triggers_alt_strategy(opponent):
             return _alt_strategy(opponent)
         return _backstabber_strategy(opponent)
 
 
-def _backstabber_strategy(opponent: IpdPlayer) -> Action:
+def _backstabber_strategy(opponent: Player) -> Action:
     """
     Cooperates until opponent defects a total of four times, then always
     defects.
@@ -75,7 +75,7 @@ def _backstabber_strategy(opponent: IpdPlayer) -> Action:
     return C
 
 
-def _alt_strategy(opponent: IpdPlayer) -> Action:
+def _alt_strategy(opponent: Player) -> Action:
     """
     If opponent's previous two plays were defect, then defects on next round.
     Otherwise, cooperates.
@@ -86,7 +86,7 @@ def _alt_strategy(opponent: IpdPlayer) -> Action:
     return C
 
 
-def _opponent_triggers_alt_strategy(opponent: IpdPlayer) -> bool:
+def _opponent_triggers_alt_strategy(opponent: Player) -> bool:
     """
     If opponent did not defect in first 7 rounds and the current round is from 8
     to 180, return True. Else, return False.
@@ -99,7 +99,7 @@ def _opponent_triggers_alt_strategy(opponent: IpdPlayer) -> bool:
     return before_alt_strategy < current_round <= last_round_of_alt_strategy
 
 
-def _opponent_defected_in_first_n_rounds(opponent: IpdPlayer, first_n_rounds: int) -> bool:
+def _opponent_defected_in_first_n_rounds(opponent: Player, first_n_rounds: int) -> bool:
     """
     If opponent defected in the first N rounds, return True. Else return False.
     """

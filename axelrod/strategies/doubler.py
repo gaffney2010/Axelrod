@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Doubler(IpdPlayer):
+class Doubler(Player):
     """
     Cooperates except when the opponent has defected and
     the opponent's cooperation count is less than twice their defection count.
@@ -25,7 +25,7 @@ class Doubler(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not self.history:
             return C
         if (

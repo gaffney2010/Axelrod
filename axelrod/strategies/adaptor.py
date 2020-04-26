@@ -1,7 +1,7 @@
 from typing import Dict, Tuple
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 from numpy import heaviside
@@ -9,7 +9,7 @@ from numpy import heaviside
 C, D = Action.C, Action.D
 
 
-class AbstractAdaptor(IpdPlayer):
+class AbstractAdaptor(Player):
     """
     An adaptive strategy that updates an internal state based on the last
     round of play. Using this state the player Cooperates with a probability
@@ -46,7 +46,7 @@ class AbstractAdaptor(IpdPlayer):
         self.delta = delta
         self.s = 0.
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if self.history:
             # Update internal state from the last play
             last_round = (self.history[-1], opponent.history[-1])

@@ -1,7 +1,7 @@
 from os import linesep
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from prompt_toolkit import prompt
 from prompt_toolkit.validation import ValidationError, Validator
 
@@ -39,7 +39,7 @@ class ActionValidator(Validator):
             raise ValidationError(message="Action must be C or D", cursor_position=0)
 
 
-class Human(IpdPlayer):
+class Human(Player):
     """
     A strategy that prompts for keyboard input rather than deriving its own
     action.
@@ -147,7 +147,7 @@ class Human(IpdPlayer):
 
         return Action.from_char(action.upper())
 
-    def strategy(self, opponent: IpdPlayer, input_function=None):
+    def strategy(self, opponent: Player, input_function=None):
         """
         Ordinarily, the strategy prompts for keyboard input rather than
         deriving its own action.

@@ -5,13 +5,13 @@ from typing import List, Tuple
 
 from axelrod.action import Action, actions_to_str, str_to_actions
 from axelrod.evolvable_player import EvolvablePlayer, InsufficientParametersError, crossover_lists
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 actions = (C, D)
 
 
-class AntiCycler(IpdPlayer):
+class AntiCycler(Player):
     """
     A player that follows a sequence of plays that contains no cycles:
     CDD  CD  CCD CCCD CCCCD ...
@@ -42,7 +42,7 @@ class AntiCycler(IpdPlayer):
     def _get_first_three() -> List[Action]:
         return [C, D, D]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         while self.first_three:
             return self.first_three.pop(0)
         if self.cycle_counter < self.cycle_length:
@@ -54,7 +54,7 @@ class AntiCycler(IpdPlayer):
             return D
 
 
-class Cycler(IpdPlayer):
+class Cycler(Player):
     """
     A player that repeats a given sequence indefinitely.
 
@@ -89,7 +89,7 @@ class Cycler(IpdPlayer):
         self.cycle = cycle
         self.set_cycle(cycle=cycle)
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         return next(self.cycle_iter)
 
     def set_cycle(self, cycle: str):
@@ -156,7 +156,7 @@ class EvolvableCycler(Cycler, EvolvablePlayer):
 
     def crossover(self, other) -> EvolvablePlayer:
         """
-        Creates and returns a new IpdPlayer instance with a single crossover point.
+        Creates and returns a new Player instance with a single crossover point.
         """
         if other.__class__ != self.__class__:
             raise TypeError("Crossover must be between the same player classes.")

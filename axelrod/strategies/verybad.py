@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class VeryBad(IpdPlayer):
+class VeryBad(Player):
     """
     It cooperates in the first three rounds, and uses probability
     (it implements a memory, which stores the opponent’s moves) to decide for
@@ -32,7 +32,7 @@ class VeryBad(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         total_moves = len(opponent.history)
 
         if total_moves < 3:

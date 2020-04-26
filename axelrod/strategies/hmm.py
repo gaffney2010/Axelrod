@@ -4,7 +4,7 @@ from numpy.random import choice
 
 from axelrod.action import Action
 from axelrod.evolvable_player import EvolvablePlayer, InsufficientParametersError, copy_lists, crossover_lists
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice, random_vector
 
 C, D = Action.C, Action.D
@@ -90,7 +90,7 @@ class SimpleHMM(object):
             return False
         return True
 
-    def __eq__(self, other: IpdPlayer) -> bool:
+    def __eq__(self, other: Player) -> bool:
         """Equality of two HMMs"""
         check = True
         for attr in [
@@ -120,16 +120,16 @@ class SimpleHMM(object):
         return action
 
 
-class HMMPlayer(IpdPlayer):
+class HMMPlayer(Player):
     """
     Abstract base class for Hidden Markov Model players.
 
     Names
 
-        - HMM IpdPlayer: Original name by Marc Harper
+        - HMM Player: Original name by Marc Harper
     """
 
-    name = "HMM IpdPlayer"
+    name = "HMM Player"
 
     classifier = {
         "memory_depth": 1,
@@ -176,7 +176,7 @@ class HMMPlayer(IpdPlayer):
             return True
         return False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0:
             return self.initial_action
         else:

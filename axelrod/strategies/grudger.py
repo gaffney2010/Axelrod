@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Grudger(IpdPlayer):
+class Grudger(Player):
     """
     A player starts by cooperating however will defect if at any point the
     opponent has defected.
@@ -33,7 +33,7 @@ class Grudger(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         """Begins by playing C, then plays D for the remaining rounds if the
         opponent ever plays D."""
         if opponent.defections:
@@ -41,7 +41,7 @@ class Grudger(IpdPlayer):
         return C
 
 
-class ForgetfulGrudger(IpdPlayer):
+class ForgetfulGrudger(Player):
     """
     A player starts by cooperating however will defect if at any point the
     opponent has defected, but forgets after mem_length matches.
@@ -69,7 +69,7 @@ class ForgetfulGrudger(IpdPlayer):
         self.grudged = False
         self.grudge_memory = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Begins by playing C, then plays D for mem_length rounds if the
         opponent ever plays D."""
         if self.grudge_memory == self.mem_length:
@@ -85,7 +85,7 @@ class ForgetfulGrudger(IpdPlayer):
         return C
 
 
-class OppositeGrudger(IpdPlayer):
+class OppositeGrudger(Player):
     """
     A player starts by defecting however will cooperate if at any point the
     opponent has cooperated.
@@ -107,7 +107,7 @@ class OppositeGrudger(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         """Begins by playing D, then plays C for the remaining rounds if the
         opponent ever plays C."""
         if opponent.cooperations:
@@ -115,7 +115,7 @@ class OppositeGrudger(IpdPlayer):
         return D
 
 
-class Aggravater(IpdPlayer):
+class Aggravater(Player):
     """
     Grudger, except that it defects on the first 3 turns
 
@@ -136,7 +136,7 @@ class Aggravater(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         if len(opponent.history) < 3:
             return D
         elif opponent.defections:
@@ -144,7 +144,7 @@ class Aggravater(IpdPlayer):
         return C
 
 
-class SoftGrudger(IpdPlayer):
+class SoftGrudger(Player):
     """
     A modification of the Grudger strategy. Instead of punishing by always
     defecting: punishes by playing: D, D, D, D, C, C. (Will continue to
@@ -170,7 +170,7 @@ class SoftGrudger(IpdPlayer):
         self.grudged = False
         self.grudge_memory = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Begins by playing C, then plays D, D, D, D, C, C against a defection
         """
         if self.grudged:
@@ -186,7 +186,7 @@ class SoftGrudger(IpdPlayer):
         return C
 
 
-class GrudgerAlternator(IpdPlayer):
+class GrudgerAlternator(Player):
     """
     A player starts by cooperating until the first opponents defection,
     then alternates D-C.
@@ -208,7 +208,7 @@ class GrudgerAlternator(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Begins by playing C, then plays Alternator for the remaining rounds
         if the opponent ever plays D."""
         if opponent.defections:
@@ -217,7 +217,7 @@ class GrudgerAlternator(IpdPlayer):
         return C
 
 
-class EasyGo(IpdPlayer):
+class EasyGo(Player):
     """
     A player starts by defecting however will cooperate if at any point the
     opponent has defected.
@@ -241,7 +241,7 @@ class EasyGo(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         """Begins by playing D, then plays C for the remaining rounds if the
         opponent ever plays D."""
         if opponent.defections:
@@ -249,7 +249,7 @@ class EasyGo(IpdPlayer):
         return D
 
 
-class GeneralSoftGrudger(IpdPlayer):
+class GeneralSoftGrudger(Player):
     """
     A generalization of the SoftGrudger strategy. SoftGrudger punishes by
     playing: D, D, D, D, C, C. after a defection by the opponent.
@@ -296,7 +296,7 @@ class GeneralSoftGrudger(IpdPlayer):
         self.grudged = False
         self.grudge_memory = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Punishes after its opponent defects 'n' times consecutively.
         The punishment is in the form of 'd' defections followed by a penance of

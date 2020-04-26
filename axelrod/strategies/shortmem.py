@@ -1,10 +1,10 @@
-from axelrod import IpdPlayer
+from axelrod import Player
 from axelrod.action import Action
 
 C, D = Action.C, Action.D
 
 
-class ShortMem(IpdPlayer):
+class ShortMem(Player):
     """
     A player starts by always cooperating for the first 10 moves.
 
@@ -32,7 +32,7 @@ class ShortMem(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         if len(opponent.history) <= 10:
             return C
 

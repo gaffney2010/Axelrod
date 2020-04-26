@@ -1,12 +1,12 @@
 from typing import List
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Adaptive(IpdPlayer):
+class Adaptive(Player):
     """Start with a specific sequence of C and D, then play the strategy that
     has worked best, recalculated each turn.
 
@@ -34,7 +34,7 @@ class Adaptive(IpdPlayer):
         self.initial_plays = initial_plays
         self.scores = {C: 0, D: 0}
 
-    def score_last_round(self, opponent: IpdPlayer):
+    def score_last_round(self, opponent: Player):
         # Load the default game if not supplied by a tournament.
         game = self.match_attributes["game"]
         if len(self.history):
@@ -42,7 +42,7 @@ class Adaptive(IpdPlayer):
             scores = game.score(last_round)
             self.scores[last_round[0]] += scores[0]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Update scores from the last play
         self.score_last_round(opponent)
         # Begin by playing the sequence C,C,C,C,C,C,D,D,D,D,D

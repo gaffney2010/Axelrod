@@ -2,23 +2,23 @@ import base64
 from pickle import dumps, loads
 from random import randrange
 from typing import Dict, List
-from .player import IpdPlayer
+from .player import Player
 
 
 class InsufficientParametersError(Exception):
-    """Error indicating that insufficient parameters were specified to initialize an Evolvable IpdPlayer."""
+    """Error indicating that insufficient parameters were specified to initialize an Evolvable Player."""
     def __init__(self, *args):
         super().__init__(*args)
 
 
-class EvolvablePlayer(IpdPlayer):
+class EvolvablePlayer(Player):
     """A class for a player that can evolve, for use in the Moran process or with reinforcement learning algorithms.
 
     This is an abstract base class, not intended to be used directly.
     """
 
     name = "EvolvablePlayer"
-    parent_class = IpdPlayer
+    parent_class = Player
     parent_kwargs = []  # type: List[str]
 
     def overwrite_init_kwargs(self, **kwargs):
@@ -43,25 +43,25 @@ class EvolvablePlayer(IpdPlayer):
 
     @classmethod
     def deserialize_parameters(cls, serialized):
-        """Deserialize parameters to a IpdPlayer instance."""
+        """Deserialize parameters to a Player instance."""
         init_kwargs = loads(base64.b64decode(serialized))
         return cls(**init_kwargs)
 
     # Optional methods for evolutionary algorithms and Moran processes.
 
     def mutate(self):
-        """Optional method to allow IpdPlayer to produce a variant (not in place)."""
+        """Optional method to allow Player to produce a variant (not in place)."""
         pass  # pragma: no cover
 
     def crossover(self, other):
-        """Optional method to allow IpdPlayer to produce variants in combination with another player. Returns a new
-        IpdPlayer."""
+        """Optional method to allow Player to produce variants in combination with another player. Returns a new
+        Player."""
         pass  # pragma: no cover
 
     # Optional methods for particle swarm algorithm.
 
     def receive_vector(self, vector):
-        """Receive a vector of params and overwrite the IpdPlayer."""
+        """Receive a vector of params and overwrite the Player."""
         pass  # pragma: no cover
 
     def create_vector_bounds(self):

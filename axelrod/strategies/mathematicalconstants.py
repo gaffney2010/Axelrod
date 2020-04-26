@@ -1,12 +1,12 @@
 import math
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class CotoDeRatio(IpdPlayer):
+class CotoDeRatio(Player):
     """The player will always aim to bring the ratio of co-operations to
     defections closer to the ratio as given in a sub class
 
@@ -25,7 +25,7 @@ class CotoDeRatio(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Initially cooperate
         if len(opponent.history) == 0:
             return C

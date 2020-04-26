@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class DBS(IpdPlayer):
+class DBS(Player):
     """
     A strategy that learns the opponent's strategy and uses symbolic noise
     detection for detecting whether anomalies in player’s behavior are
@@ -210,7 +210,7 @@ class DBS(IpdPlayer):
         p_cond = discounted_g / discounted_f
         return p_cond
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # First move
         if not self.history:
             return C

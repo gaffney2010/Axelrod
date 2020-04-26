@@ -105,8 +105,8 @@ class TestSimulateMatch(unittest.TestCase):
 
 class TestLookAhead(unittest.TestCase):
     def setUp(self):
-        self.inspector = axl.IpdPlayer()
-        self.game = axl.IpdGame()
+        self.inspector = axl.Player()
+        self.game = axl.Game()
 
     def test_cooperator(self):
         tft = axl.Cooperator()

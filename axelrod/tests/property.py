@@ -61,7 +61,7 @@ def matches(
     players = [s() for s in strategies]
     turns = draw(integers(min_value=min_turns, max_value=max_turns))
     noise = draw(floats(min_value=min_noise, max_value=max_noise))
-    match = axl.IpdMatch(players, turns=turns, noise=noise)
+    match = axl.Match(players, turns=turns, noise=noise)
     return match
 
 
@@ -108,7 +108,7 @@ def tournaments(
     repetitions = draw(integers(min_value=min_repetitions, max_value=max_repetitions))
     noise = draw(floats(min_value=min_noise, max_value=max_noise))
 
-    tournament = axl.IpdTournament(players, turns=turns, repetitions=repetitions, noise=noise)
+    tournament = axl.Tournament(players, turns=turns, repetitions=repetitions, noise=noise)
     return tournament
 
 
@@ -155,7 +155,7 @@ def prob_end_tournaments(
     repetitions = draw(integers(min_value=min_repetitions, max_value=max_repetitions))
     noise = draw(floats(min_value=min_noise, max_value=max_noise))
 
-    tournament = axl.IpdTournament(
+    tournament = axl.Tournament(
         players, prob_end=prob_end, repetitions=repetitions, noise=noise
     )
     return tournament
@@ -223,7 +223,7 @@ def spatial_tournaments(
     repetitions = draw(integers(min_value=min_repetitions, max_value=max_repetitions))
     noise = draw(floats(min_value=min_noise, max_value=max_noise))
 
-    tournament = axl.IpdTournament(
+    tournament = axl.Tournament(
         players, turns=turns, repetitions=repetitions, noise=noise, edges=edges
     )
     return tournament
@@ -291,7 +291,7 @@ def prob_end_spatial_tournaments(
     repetitions = draw(integers(min_value=min_repetitions, max_value=max_repetitions))
     noise = draw(floats(min_value=min_noise, max_value=max_noise))
 
-    tournament = axl.IpdTournament(
+    tournament = axl.Tournament(
         players, prob_end=prob_end, repetitions=repetitions, noise=noise, edges=edges
     )
     return tournament
@@ -331,5 +331,5 @@ def games(draw, prisoners_dilemma=True, max_value=100):
         r = draw(integers(max_value=max_value))
         p = draw(integers(max_value=max_value))
 
-    game = axl.IpdGame(r=r, s=s, t=t, p=p)
+    game = axl.Game(r=r, s=s, t=t, p=p)
     return game

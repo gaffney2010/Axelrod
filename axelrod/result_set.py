@@ -677,7 +677,7 @@ class ResultSet:
         median_wins = map(np.nanmedian, self.wins)
 
         self.player = namedtuple(
-            "IpdPlayer",
+            "Player",
             [
                 "Rank",
                 "Name",

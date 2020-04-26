@@ -40,7 +40,7 @@ class TestAdaptive(TestPlayer):
         player.play(opponent)
         player.play(opponent)
         self.assertEqual(3, player.scores[C])
-        game = axl.IpdGame(-3, 10, 10, 10)
+        game = axl.Game(-3, 10, 10, 10)
         player.set_match_attributes(game=game)
         player.play(opponent)
         self.assertEqual(0, player.scores[C])

@@ -1,11 +1,11 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class AverageCopier(IpdPlayer):
+class AverageCopier(Player):
     """
     The player will cooperate with probability p if the opponent's cooperation
     ratio is p. Starts with random decision.
@@ -26,7 +26,7 @@ class AverageCopier(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) == 0:
             # Randomly picks a strategy (not affected by history).
             return random_choice(0.5)
@@ -34,7 +34,7 @@ class AverageCopier(IpdPlayer):
         return random_choice(p)
 
 
-class NiceAverageCopier(IpdPlayer):
+class NiceAverageCopier(Player):
     """
     Same as Average Copier, but always starts by cooperating.
 
@@ -54,7 +54,7 @@ class NiceAverageCopier(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) == 0:
             return C
         p = opponent.cooperations / len(opponent.history)

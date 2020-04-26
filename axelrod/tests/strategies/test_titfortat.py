@@ -44,7 +44,7 @@ class TestTitForTat(TestPlayer):
         actions = [(C, D), (D, D), (D, D), (D, D), (D, D)]
         self.versus_test(axl.Defector(), expected_actions=actions)
 
-        # This behaviour is independent of knowledge of the IpdMatch length
+        # This behaviour is independent of knowledge of the Match length
         actions = [(C, C), (C, D), (D, C), (C, D), (D, C)]
         self.versus_test(
             axl.Alternator(),
@@ -486,7 +486,7 @@ class TestGradual(TestPlayer):
             axl.CyclerDDC(),
         ]
         axl.seed(1)
-        tournament = axl.IpdTournament(players, turns=1000, repetitions=1)
+        tournament = axl.Tournament(players, turns=1000, repetitions=1)
         results = tournament.play(progress_bar=False)
         scores = [
             round(average_score_per_turn * 1000, 1)
@@ -671,7 +671,7 @@ class TestOriginalGradual(TestPlayer):
 
         axl.seed(1)
         turns = 1000
-        tournament = axl.IpdTournament(players, turns=turns, repetitions=1)
+        tournament = axl.Tournament(players, turns=turns, repetitions=1)
         results = tournament.play(progress_bar=False)
         scores = [
             round(average_score_per_turn * 1000, 1)
@@ -723,8 +723,8 @@ class TestContriteTitForTat(TestPlayer):
         tft = axl.TitForTat()
         ctft = self.player()
         opponent = strategies[0]()
-        m1 = axl.IpdMatch((tft, opponent), turns)
-        m2 = axl.IpdMatch((ctft, opponent), turns)
+        m1 = axl.Match((tft, opponent), turns)
+        m2 = axl.Match((ctft, opponent), turns)
         self.assertEqual(m1.play(), m2.play())
 
     def test_strategy_with_noise(self):

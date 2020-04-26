@@ -43,8 +43,8 @@ _test_classifier = {
 }
 
 
-class ParameterisedTestPlayer(axl.IpdPlayer):
-    """A simple IpdPlayer class for testing init parameters"""
+class ParameterisedTestPlayer(axl.Player):
+    """A simple Player class for testing init parameters"""
 
     name = "ParameterisedTestPlayer"
     classifier = _test_classifier
@@ -54,8 +54,8 @@ class ParameterisedTestPlayer(axl.IpdPlayer):
 
 
 class TestPlayerClass(unittest.TestCase):
-    name = "IpdPlayer"
-    player = axl.IpdPlayer
+    name = "Player"
+    player = axl.Player
     classifier = {"stochastic": False}
 
     def test_play(self):
@@ -90,7 +90,7 @@ class TestPlayerClass(unittest.TestCase):
     def test_state_distribution(self):
         player1 = axl.MockPlayer([C, C, D, D, C])
         player2 = axl.MockPlayer([C, D, C, D, D])
-        match = axl.IpdMatch((player1, player2), turns=5)
+        match = axl.Match((player1, player2), turns=5)
         _ = match.play()
         self.assertEqual(
             player1.state_distribution,
@@ -112,7 +112,7 @@ class TestPlayerClass(unittest.TestCase):
         self.assertEqual(player2.history[0], D)
 
     def test_update_history(self):
-        player = axl.IpdPlayer()
+        player = axl.Player()
         self.assertEqual(player.history, [])
         self.assertEqual(player.cooperations, 0)
         self.assertEqual(player.defections, 0)
@@ -126,7 +126,7 @@ class TestPlayerClass(unittest.TestCase):
         self.assertEqual(player.cooperations, 1)
 
     def test_history_assignment(self):
-        player = axl.IpdPlayer()
+        player = axl.Player()
         with self.assertRaises(AttributeError):
             player.history = []
 
@@ -146,7 +146,7 @@ class TestPlayerClass(unittest.TestCase):
             seed = random.randint(0, 10 ** 6)
             for p in [player1, player2]:
                 axl.seed(seed)
-                m = axl.IpdMatch((p, op), turns=turns)
+                m = axl.Match((p, op), turns=turns)
                 m.play()
             self.assertEqual(len(player1.history), turns)
             self.assertEqual(player1.history, player2.history)
@@ -319,9 +319,9 @@ class TestPlayerClass(unittest.TestCase):
         # Test that init_kwargs exist and are empty
         self.assertEqual(self.player().init_kwargs, {})
         # Test that passing a positional argument raises an error
-        self.assertRaises(TypeError, axl.IpdPlayer, "test")
+        self.assertRaises(TypeError, axl.Player, "test")
         # Test that passing a keyword argument raises an error
-        self.assertRaises(TypeError, axl.IpdPlayer, arg_test1="test")
+        self.assertRaises(TypeError, axl.Player, arg_test1="test")
 
         # Tests for Players with init parameters
 
@@ -354,7 +354,7 @@ class TestPlayerClass(unittest.TestCase):
         )
 
 
-class TestOpponent(axl.IpdPlayer):
+class TestOpponent(axl.Player):
     """A player who only exists so we have something to test against"""
 
     name = "TestOpponent"
@@ -496,7 +496,7 @@ class TestPlayer(unittest.TestCase):
             player2.reset()
             for p in [player1, player2]:
                 axl.seed(seed)
-                m = axl.IpdMatch((p, op), turns=turns)
+                m = axl.Match((p, op), turns=turns)
                 m.play()
             self.assertEqual(len(player1.history), turns)
             self.assertEqual(player1.history, player2.history)
@@ -554,9 +554,9 @@ class TestPlayer(unittest.TestCase):
         Tests a sequence of outcomes for two given players.
         Parameters:
         -----------
-        opponent: IpdPlayer or list
+        opponent: Player or list
             An instance of a player OR a sequence of actions. If a sequence of
-            actions is passed, a Mock IpdPlayer is created that cycles over that
+            actions is passed, a Mock Player is created that cycles over that
             sequence.
         expected_actions: List
             The expected outcomes of the match (list of tuples of actions).
@@ -587,7 +587,7 @@ class TestPlayer(unittest.TestCase):
 
         player = self.player(**init_kwargs)
 
-        match = axl.IpdMatch(
+        match = axl.Match(
             (player, opponent),
             turns=turns,
             noise=noise,
@@ -657,7 +657,7 @@ class TestMatch(unittest.TestCase):
         if seed:
             axl.seed(seed)
         turns = len(expected_actions1)
-        match = axl.IpdMatch((player1, player2), turns=turns, noise=noise)
+        match = axl.Match((player1, player2), turns=turns, noise=noise)
         match.play()
         # Test expected sequence of play.
         for i, (outcome1, outcome2) in enumerate(
@@ -696,7 +696,7 @@ def test_memory(player, opponent, memory_length, seed=0, turns=10):
     """
     # Play the match normally.
     axl.seed(seed)
-    match = axl.IpdMatch((player, opponent), turns=turns)
+    match = axl.Match((player, opponent), turns=turns)
     plays = [p[0] for p in match.play()]
 
     # Play with limited history.
@@ -705,7 +705,7 @@ def test_memory(player, opponent, memory_length, seed=0, turns=10):
     player._history = axl.LimitedHistory(memory_length)
     opponent._history = axl.LimitedHistory(memory_length)
     axl.seed(seed)
-    match = axl.IpdMatch((player, opponent), turns=turns, reset=False)
+    match = axl.Match((player, opponent), turns=turns, reset=False)
     limited_plays = [p[0] for p in match.play()]
 
     return plays == limited_plays

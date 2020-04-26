@@ -171,12 +171,12 @@ class TestTransformers(unittest.TestCase):
         self.assertEqual(player.__doc__, transformer.__doc__)
 
     def test_cloning(self):
-        """Tests that IpdPlayer.clone preserves the application of transformations.
+        """Tests that Player.clone preserves the application of transformations.
         """
         p1 = axl.Cooperator()
         p2 = FlipTransformer()(axl.Cooperator)()  # Defector
         p3 = p2.clone()
-        match = axl.IpdMatch((p1, p3), turns=2)
+        match = axl.Match((p1, p3), turns=2)
         results = match.play()
         self.assertEqual(results, [(C, D), (C, D)])
 
@@ -187,7 +187,7 @@ class TestTransformers(unittest.TestCase):
         Cooperator2 = transformer(axl.Cooperator)
         p1 = Cooperator2()
         p2 = axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), turns=2)
+        match = axl.Match((p1, p2), turns=2)
         results = match.play()
         self.assertEqual(results, [(C, C), (C, C)])
 
@@ -195,7 +195,7 @@ class TestTransformers(unittest.TestCase):
         """Tests that FlipTransformer(Cooperator) == Defector."""
         p1 = axl.Cooperator()
         p2 = FlipTransformer()(axl.Cooperator)()  # Defector
-        match = axl.IpdMatch((p1, p2), turns=3)
+        match = axl.Match((p1, p2), turns=3)
         results = match.play()
         self.assertEqual(results, [(C, D), (C, D), (C, D)])
 

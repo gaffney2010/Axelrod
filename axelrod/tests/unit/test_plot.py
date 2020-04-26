@@ -96,7 +96,7 @@ class TestPlot(unittest.TestCase):
     def test_init_from_resulsetfromfile(self):
         tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
         players = [axl.Cooperator(), axl.TitForTat(), axl.Defector()]
-        tournament = axl.IpdTournament(players=players, turns=2, repetitions=2)
+        tournament = axl.Tournament(players=players, turns=2, repetitions=2)
         tournament.play(filename=tmp_file.name, progress_bar=False)
         tmp_file.close()
         rs = axl.ResultSet(tmp_file.name, players, 2, progress_bar=False)

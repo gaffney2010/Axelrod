@@ -5,7 +5,7 @@ import warnings
 from typing import Dict, Tuple
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 from .defector import Defector
@@ -14,7 +14,7 @@ from .titfortat import TitFor2Tats, TitForTat
 C, D = Action.C, Action.D
 
 
-class MemoryTwoPlayer(IpdPlayer):
+class MemoryTwoPlayer(Player):
     """
     Uses a sixteen-vector for strategies based on the 16 conditional probabilities
     P(X | I,J,K,L) where X, I, J, K, L in [C, D] and I, J are the players last
@@ -43,7 +43,7 @@ class MemoryTwoPlayer(IpdPlayer):
     - Memory Two: [Hilbe2017]_
     """
 
-    name = "Generic Memory Two IpdPlayer"
+    name = "Generic Memory Two Player"
     classifier = {
         "memory_depth": 2,
         "stochastic": False,
@@ -76,7 +76,7 @@ class MemoryTwoPlayer(IpdPlayer):
             warnings.warn("Memory two player is set to default, Cooperator.")
 
         self.set_sixteen_vector(sixteen_vector)
-        if self.name == "Generic Memory Two IpdPlayer":
+        if self.name == "Generic Memory Two Player":
             self.name = "%s: %s" % (self.name, sixteen_vector)
 
     def set_sixteen_vector(self, sixteen_vector: Tuple):
@@ -95,7 +95,7 @@ class MemoryTwoPlayer(IpdPlayer):
         )  # type: Dict[tuple, float]
         self.classifier["stochastic"] = any(0 < x < 1 for x in set(sixteen_vector))
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) <= 1:
             return self._initial
         # Determine which probability to use
@@ -206,7 +206,7 @@ class DelayedAON1(MemoryTwoPlayer):
         super().__init__(sixteen_vector)
 
 
-class MEM2(IpdPlayer):
+class MEM2(Player):
     """A memory-two player that switches between TFT, TFTT, and ALLD.
 
     Note that the reference claims that this is a memory two strategy but in
@@ -237,7 +237,7 @@ class MEM2(IpdPlayer):
         self.shift_counter = 3
         self.alld_counter = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Update Histories
         # Note that this assumes that TFT and TFTT do not use internal counters,
         # Rather that they examine the actual history of play

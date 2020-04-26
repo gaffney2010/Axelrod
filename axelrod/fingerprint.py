@@ -10,7 +10,7 @@ import tqdm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import axelrod as axl
-from axelrod import IpdPlayer
+from axelrod import Player
 from axelrod.interaction_utils import (
     compute_final_score_per_turn,
     read_interactions_from_file,
@@ -59,7 +59,7 @@ def _create_points(step: float, progress_bar: bool = True) -> List[Point]:
     return points
 
 
-def _create_jossann(point: Point, probe: Any) -> IpdPlayer:
+def _create_jossann(point: Point, probe: Any) -> Player:
     """Creates a JossAnn probe player that matches the Point.
 
     If the coordinates of point sums to more than 1 the parameters are
@@ -80,7 +80,7 @@ def _create_jossann(point: Point, probe: Any) -> IpdPlayer:
     """
     x, y = point
 
-    if isinstance(probe, axl.IpdPlayer):
+    if isinstance(probe, axl.Player):
         init_kwargs = probe.init_kwargs
         probe = probe.__class__
     else:
@@ -96,8 +96,8 @@ def _create_jossann(point: Point, probe: Any) -> IpdPlayer:
 
 
 def _create_probes(
-    probe: Union[type, IpdPlayer], points: list, progress_bar: bool = True
-) -> List[IpdPlayer]:
+    probe: Union[type, Player], points: list, progress_bar: bool = True
+) -> List[Player]:
     """Creates a set of probe strategies over the unit square.
 
     Constructs probe strategies that correspond to points with coordinates
@@ -216,7 +216,7 @@ def _reshape_data(data: dict, points: list, size: int) -> np.ndarray:
 
 class AshlockFingerprint(object):
     def __init__(
-        self, strategy: Union[type, IpdPlayer], probe: Union[type, IpdPlayer] = axl.TitForTat
+        self, strategy: Union[type, Player], probe: Union[type, Player] = axl.TitForTat
     ) -> None:
         """
         Parameters
@@ -264,7 +264,7 @@ class AshlockFingerprint(object):
             self.probe, self.points, progress_bar=progress_bar
         )
 
-        if isinstance(self.strategy, axl.IpdPlayer):
+        if isinstance(self.strategy, axl.Player):
             tournament_players = [self.strategy] + probe_players
         else:
             tournament_players = [self.strategy()] + probe_players
@@ -321,7 +321,7 @@ class AshlockFingerprint(object):
         )
 
         self.step = step
-        self.spatial_tournament = axl.IpdTournament(
+        self.spatial_tournament = axl.Tournament(
             tourn_players, turns=turns, repetitions=repetitions, edges=edges
         )
         self.spatial_tournament.play(
@@ -460,7 +460,7 @@ class TransitiveFingerprint(object):
             and the jth column the jth turn.
         """
 
-        if isinstance(self.strategy, axl.IpdPlayer):
+        if isinstance(self.strategy, axl.Player):
             players = [self.strategy] + self.opponents
         else:
             players = [self.strategy()] + self.opponents
@@ -470,7 +470,7 @@ class TransitiveFingerprint(object):
             temp_file_descriptor, filename = mkstemp()  # type: ignore
 
         edges = [(0, k + 1) for k in range(len(self.opponents))]
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             players=players,
             edges=edges,
             turns=turns,

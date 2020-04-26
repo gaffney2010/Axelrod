@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class MindController(IpdPlayer):
+class MindController(Player):
     """A player that changes the opponents strategy to cooperate.
 
     Names
@@ -24,7 +24,7 @@ class MindController(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         """
         Alters the opponents strategy method to be a lambda function which
         always returns C. This player will then always return D to take
@@ -35,7 +35,7 @@ class MindController(IpdPlayer):
         return D
 
 
-class MindWarper(IpdPlayer):
+class MindWarper(Player):
     """
     A player that changes the opponent's strategy but blocks changes to
     its own.
@@ -63,7 +63,7 @@ class MindWarper(IpdPlayer):
             self.__dict__[name] = val
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         opponent.strategy = lambda opponent: C
         return D
 
@@ -90,6 +90,6 @@ class MindBender(MindWarper):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         opponent.__dict__["strategy"] = lambda opponent: C
         return D

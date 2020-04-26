@@ -2,12 +2,12 @@ import random
 
 from axelrod import random_choice
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class BushMosteller(IpdPlayer):
+class BushMosteller(Player):
     """
     A player that is based on Bush Mosteller reinforced learning algorithm, it
     decides what it will
@@ -72,7 +72,7 @@ class BushMosteller(IpdPlayer):
         self._stimulus = 0.0
         self._learning_rate = learning_rate
 
-    def stimulus_update(self, opponent: IpdPlayer):
+    def stimulus_update(self, opponent: Player):
         """
         Updates the stimulus attribute based on the opponent's history. Used by
         the strategy.
@@ -120,7 +120,7 @@ class BushMosteller(IpdPlayer):
             elif self._stimulus < 0:
                 self._d_prob += self._learning_rate * self._stimulus * self._d_prob
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         # First turn
         if len(self.history) == 0:

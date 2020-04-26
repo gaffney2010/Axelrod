@@ -100,20 +100,20 @@ class TestFirstByFeld(TestPlayer):
         p1 = self.player(start_coop_prob=1.0, end_coop_prob=0.8, rounds_of_decay=100)
         self.assertEqual(1.0, p1._cooperation_probability())
         p2 = axl.Cooperator()
-        match = axl.IpdMatch((p1, p2), turns=50)
+        match = axl.Match((p1, p2), turns=50)
         match.play()
         self.assertEqual(0.9, p1._cooperation_probability())
-        match = axl.IpdMatch((p1, p2), turns=100)
+        match = axl.Match((p1, p2), turns=100)
         match.play()
         self.assertEqual(0.8, p1._cooperation_probability())
 
         # Test cooperation probabilities, second set of params
         p1 = self.player(start_coop_prob=1.0, end_coop_prob=0.5, rounds_of_decay=200)
         self.assertEqual(1.0, p1._cooperation_probability())
-        match = axl.IpdMatch((p1, p2), turns=100)
+        match = axl.Match((p1, p2), turns=100)
         match.play()
         self.assertEqual(0.75, p1._cooperation_probability())
-        match = axl.IpdMatch((p1, p2), turns=200)
+        match = axl.Match((p1, p2), turns=200)
         match.play()
         self.assertEqual(0.5, p1._cooperation_probability())
 
@@ -122,7 +122,7 @@ class TestFirstByFeld(TestPlayer):
         for opponent in [axl.Cooperator(), axl.Defector()]:
             player = self.player()
             self.assertEqual(player._cooperation_probability(), player._start_coop_prob)
-            match = axl.IpdMatch((player, opponent), turns=201)
+            match = axl.Match((player, opponent), turns=201)
             match.play()
             self.assertEqual(player._cooperation_probability(), player._end_coop_prob)
 
@@ -487,7 +487,7 @@ class TestFirstBySteinAndRapoport(TestPlayer):
         self.assertFalse(player.opponent_is_random)
 
     def test_strategy(self):
-        # Our IpdPlayer (SteinAndRapoport) vs Cooperator
+        # Our Player (SteinAndRapoport) vs Cooperator
         # After 15th round (pvalue < alpha) still plays TitForTat.
         # Note it always defects on the last two rounds.
         opponent = axl.Cooperator()

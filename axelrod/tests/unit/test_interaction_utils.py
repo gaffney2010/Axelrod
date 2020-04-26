@@ -129,7 +129,7 @@ class TestMatch(unittest.TestCase):
     def test_read_interactions_from_file(self):
         tmp_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
         players = [axl.Cooperator(), axl.Defector()]
-        tournament = axl.IpdTournament(players=players, turns=2, repetitions=3)
+        tournament = axl.Tournament(players=players, turns=2, repetitions=3)
         tournament.play(filename=tmp_file.name)
         tmp_file.close()
         expected_interactions = {

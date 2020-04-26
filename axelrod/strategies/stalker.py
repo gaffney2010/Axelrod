@@ -1,5 +1,5 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 from axelrod.strategy_transformers import FinalTransformer
 
@@ -7,7 +7,7 @@ C, D = Action.C, Action.D
 
 
 @FinalTransformer((D,), name_prefix=None)  # End with defection
-class Stalker(IpdPlayer):
+class Stalker(Player):
     """
 
     This is a strategy which is only influenced by the score.
@@ -49,14 +49,14 @@ class Stalker(IpdPlayer):
         self.wish_score = (R + P) / 2
         self.current_score = 0
 
-    def score_last_round(self, opponent: IpdPlayer):
+    def score_last_round(self, opponent: Player):
         # Load the default game if not supplied by a tournament.
         game = self.match_attributes["game"]
         last_round = (self.history[-1], opponent.history[-1])
         scores = game.score(last_round)
         self.current_score += scores[0]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         if len(self.history) == 0:
             return C

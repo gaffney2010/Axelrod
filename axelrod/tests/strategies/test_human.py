@@ -113,7 +113,7 @@ class TestHumanClass(TestPlayer):
     def test_strategy(self):
         human = Human()
         expected_action = C
-        actual_action = human.strategy(axl.IpdPlayer(), lambda: C)
+        actual_action = human.strategy(axl.Player(), lambda: C)
         self.assertEqual(actual_action, expected_action)
 
     def test_reset_history_and_attributes(self):

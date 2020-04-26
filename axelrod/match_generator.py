@@ -11,7 +11,7 @@ class MatchGenerator(object):
         match_attributes=None,
     ):
         """
-        A class to generate matches. This is used by the IpdTournament class which
+        A class to generate matches. This is used by the Tournament class which
         is in charge of playing the matches and collecting the results.
 
         Parameters
@@ -22,7 +22,7 @@ class MatchGenerator(object):
             The number of repetitions of a given match
         turns : integer
             The number of turns per match
-        game : axelrod.IpdGame
+        game : axelrod.Game
             The game object used to score the match
         noise : float, 0
             The probability that a player's intended action should be flipped

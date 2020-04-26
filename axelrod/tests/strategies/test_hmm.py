@@ -149,7 +149,7 @@ class TestHMMPlayers(unittest.TestCase):
 
 class TestHMMPlayer(TestPlayer):
 
-    name = "HMM IpdPlayer: 0, C"
+    name = "HMM Player: 0, C"
     player = axl.HMMPlayer
 
     expected_classifier = {

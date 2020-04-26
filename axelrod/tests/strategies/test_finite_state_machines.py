@@ -96,7 +96,7 @@ class TestSampleFSMPlayer(TestPlayer):
     """Test a few sample tables to make sure that the finite state machines are
     working as intended."""
 
-    name = "FSM IpdPlayer: ((1, C, 1, C), (1, D, 1, D)), 1, C"
+    name = "FSM Player: ((1, C, 1, C), (1, D, 1, D)), 1, C"
     player = axl.FSMPlayer
 
     expected_classifier = {
@@ -168,7 +168,7 @@ class TestSampleFSMPlayer(TestPlayer):
 
 
 class TestFSMPlayer(TestPlayer):
-    name = "FSM IpdPlayer: ((1, C, 1, C), (1, D, 1, D)), 1, C"
+    name = "FSM Player: ((1, C, 1, C), (1, D, 1, D)), 1, C"
     player = axl.FSMPlayer
 
     expected_classifier = {

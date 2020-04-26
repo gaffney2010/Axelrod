@@ -6,11 +6,11 @@ from typing import Callable, List, Optional, Set, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
-from axelrod import EvolvablePlayer, DEFAULT_TURNS, IpdGame, IpdPlayer
+from axelrod import EvolvablePlayer, DEFAULT_TURNS, Game, Player
 
 from .deterministic_cache import DeterministicCache
 from .graph import Graph, complete_graph
-from .match import IpdMatch
+from .match import Match
 from .random_ import randrange
 
 
@@ -45,11 +45,11 @@ def fitness_proportionate_selection(
 class MoranProcess(object):
     def __init__(
         self,
-        players: List[IpdPlayer],
+        players: List[Player],
         turns: int = DEFAULT_TURNS,
         prob_end: float = None,
         noise: float = 0,
-        game: IpdGame = None,
+        game: Game = None,
         deterministic_cache: DeterministicCache = None,
         mutation_rate: float = 0.0,
         mode: str = "bd",
@@ -61,7 +61,7 @@ class MoranProcess(object):
     ) -> None:
         """
         An agent based Moran process class. In each round, each player plays a
-        IpdMatch with each other player. Players are assigned a fitness score by
+        Match with each other player. Players are assigned a fitness score by
         their total score from all matches in the round. A player is chosen to
         reproduce proportionally to fitness, possibly mutated, and is cloned.
         The clone replaces a randomly chosen player.
@@ -78,7 +78,7 @@ class MoranProcess(object):
 
         It is possible to pass interaction graphs and reproduction graphs to the
         Moran process. In this case, in each round, each player plays a
-        IpdMatch with each neighboring player according to the interaction graph.
+        Match with each neighboring player according to the interaction graph.
         Players are assigned a fitness score by their total score from all
         matches in the round. A player is chosen to reproduce proportionally to
         fitness, possibly mutated, and is cloned. The clone replaces a randomly
@@ -94,7 +94,7 @@ class MoranProcess(object):
         noise:
             The background noise, if any. Randomly flips plays with probability
             `noise`.
-        game: axelrod.IpdGame
+        game: axelrod.Game
             The game object used to score matches.
         deterministic_cache:
             A optional prebuilt deterministic cache
@@ -182,7 +182,7 @@ class MoranProcess(object):
             self.players.append(player)
         self.populations = [self.population_distribution()]
 
-    def mutate(self, index: int) -> IpdPlayer:
+    def mutate(self, index: int) -> Player:
         """Mutate the player at index.
 
         Parameters
@@ -356,7 +356,7 @@ class MoranProcess(object):
         for i, j in self._matchup_indices():
             player1 = self.players[i]
             player2 = self.players[j]
-            match = IpdMatch(
+            match = Match(
                 (player1, player2),
                 turns=self.turns,
                 prob_end=self.prob_end,
@@ -469,14 +469,14 @@ class MoranProcess(object):
 class ApproximateMoranProcess(MoranProcess):
     """
     A class to approximate a Moran process based
-    on a distribution of potential IpdMatch outcomes.
+    on a distribution of potential Match outcomes.
 
     Instead of playing the matches, the result is sampled
     from a dictionary of player tuples to distribution of match outcomes
     """
 
     def __init__(
-        self, players: List[IpdPlayer], cached_outcomes: dict, mutation_rate: float = 0
+        self, players: List[Player], cached_outcomes: dict, mutation_rate: float = 0
     ) -> None:
         """
         Parameters

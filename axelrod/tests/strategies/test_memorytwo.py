@@ -51,19 +51,19 @@ class TestGenericPlayerTwo(unittest.TestCase):
     def test_name(self):
         self.assertEqual(
             self.p1.name,
-            "Generic Memory Two IpdPlayer: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+            "Generic Memory Two Player: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
         )
         self.assertEqual(
             self.p2.name,
-            "Generic Memory Two IpdPlayer: (1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0)",
+            "Generic Memory Two Player: (1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0)",
         )
         self.assertEqual(
             self.p3.name,
-            "Generic Memory Two IpdPlayer: (0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5)",
+            "Generic Memory Two Player: (0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5)",
         )
         self.assertEqual(
             self.p4.name,
-            "Generic Memory Two IpdPlayer: (0.1, 0, 0.2, 0, 0.3, 0, 0.4, 0, 0.5, 0, 0.6, 0, 0.7, 0, 0.8, 0)",
+            "Generic Memory Two Player: (0.1, 0, 0.2, 0, 0.3, 0, 0.4, 0, 0.5, 0, 0.6, 0, 0.7, 0, 0.8, 0)",
         )
 
     def test_deterministic_classification(self):
@@ -142,7 +142,7 @@ class TestMemoryTwoPlayer(unittest.TestCase):
 
 class TestMemoryStochastic(TestPlayer):
     name = (
-        "Generic Memory Two IpdPlayer: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1): C"
+        "Generic Memory Two Player: (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1): C"
     )
     player = axl.MemoryTwoPlayer
     expected_classifier = {

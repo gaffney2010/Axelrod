@@ -14,7 +14,7 @@ from typing import (
 import warnings
 import yaml
 
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 ALL_CLASSIFIERS_PATH = "data/all_classifiers.yml"
 
@@ -22,10 +22,10 @@ T = TypeVar("T")
 
 
 class Classifier(Generic[T]):
-    """Describes a IpdPlayer (strategy).
+    """Describes a Player (strategy).
 
     User sets a name and function, f, at initialization.  Through
-    classify_player, looks for the classifier to be set in the passed IpdPlayer
+    classify_player, looks for the classifier to be set in the passed Player
     class.  If not set, then passes to f for calculation.
 
     f must operate on the class, and not an instance.  If necessary, f may
@@ -38,18 +38,18 @@ class Classifier(Generic[T]):
     Attributes
     ----------
     name: An identifier for the classifier, used as a dict key in storage and in
-        'classifier' dicts of IpdPlayer classes.
-    player_class_classifier: A function that takes in a IpdPlayer class (not an
+        'classifier' dicts of Player classes.
+    player_class_classifier: A function that takes in a Player class (not an
         instance) and returns a value.
     """
 
     def __init__(
-        self, name: Text, player_class_classifier: Callable[[Type[IpdPlayer]], T]
+        self, name: Text, player_class_classifier: Callable[[Type[Player]], T]
     ):
         self.name = name
         self.player_class_classifier = player_class_classifier
 
-    def classify_player(self, player: Type[IpdPlayer]) -> T:
+    def classify_player(self, player: Type[Player]) -> T:
         """Look for this classifier in the passed player's 'classifier' dict,
         otherwise pass to the player to f."""
         try:
@@ -80,7 +80,7 @@ all_classifiers = [
 
 def rebuild_classifier_table(
     classifiers: List[Classifier],
-    players: List[Type[IpdPlayer]],
+    players: List[Type[Player]],
     path: Text = ALL_CLASSIFIERS_PATH,
 ) -> None:
     """Builds the classifier table in data.
@@ -142,7 +142,7 @@ class _Classifiers(object):
     @classmethod
     def __getitem__(
         cls, key: Union[Classifier, Text]
-    ) -> Callable[[Union[IpdPlayer, Type[IpdPlayer]]], Any]:
+    ) -> Callable[[Union[Player, Type[Player]]], Any]:
         """Looks up the classifier for the player.
 
         Given a passed classifier key, return a function that:
@@ -152,7 +152,7 @@ class _Classifiers(object):
         player in the all_player_dicts.  Returns None if the classifier is not
         found in either of those.
 
-        The returned function expects IpdPlayer instances, but if a IpdPlayer class is
+        The returned function expects Player instances, but if a Player class is
         passed, then it will create an instance by calling an argument-less
         initializer.  If no such initializer exists on the class, then an error
         will result.
@@ -164,7 +164,7 @@ class _Classifiers(object):
 
         Returns
         -------
-        A function that will map IpdPlayer (or IpdPlayer instances) to their value for
+        A function that will map Player (or Player instances) to their value for
             this classification.
         """
         # Key may be the name or an instance.  Convert to name.
@@ -175,7 +175,7 @@ class _Classifiers(object):
             raise KeyError("Unknown classifier")
 
         def classify_player_for_this_classifier(
-            player: Union[IpdPlayer, Type[IpdPlayer]]
+            player: Union[Player, Type[Player]]
         ) -> Any:
             def try_lookup() -> Any:
                 try:
@@ -187,7 +187,7 @@ class _Classifiers(object):
 
             # If the passed player is not an instance, then try to initialize an
             # instance without arguments.
-            if not isinstance(player, IpdPlayer):
+            if not isinstance(player, Player):
                 try:
                     player = player()
                     warnings.warn(
@@ -214,7 +214,7 @@ class _Classifiers(object):
         return classify_player_for_this_classifier
 
     @classmethod
-    def is_basic(cls, s: Union[IpdPlayer, Type[IpdPlayer]]):
+    def is_basic(cls, s: Union[Player, Type[Player]]):
         """
         Defines criteria for a strategy to be considered 'basic'
         """
@@ -232,7 +232,7 @@ class _Classifiers(object):
         )
 
     @classmethod
-    def obey_axelrod(cls, s: Union[IpdPlayer, Type[IpdPlayer]]):
+    def obey_axelrod(cls, s: Union[Player, Type[Player]]):
         """
         A function to check if a strategy obeys Axelrod's original tournament
         rules.

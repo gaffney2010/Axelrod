@@ -3,7 +3,7 @@ from collections import OrderedDict
 from typing import Dict, List, Union
 
 from axelrod.action import Action, actions_to_str
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 Score = Union[int, float]
@@ -11,7 +11,7 @@ Score = Union[int, float]
 C, D = Action.C, Action.D
 
 
-class RiskyQLearner(IpdPlayer):
+class RiskyQLearner(Player):
     """A player who learns the best strategies through the q-learning
     algorithm.
 
@@ -58,7 +58,7 @@ class RiskyQLearner(IpdPlayer):
         (R, P, S, T) = self.match_attributes["game"].RPST()
         self.payoff_matrix = {C: {C: R, D: S}, D: {C: T, D: P}}
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Runs a qlearn algorithm while the tournament is running."""
         if len(self.history) == 0:
             self.prev_action = random_choice()
@@ -84,7 +84,7 @@ class RiskyQLearner(IpdPlayer):
             return max(self.Qs[state], key=lambda x: self.Qs[state][x])
         return random_choice()
 
-    def find_state(self, opponent: IpdPlayer) -> str:
+    def find_state(self, opponent: Player) -> str:
         """
         Finds the my_state (the opponents last n moves +
         its previous proportion of playing C) as a hashable state
@@ -102,7 +102,7 @@ class RiskyQLearner(IpdPlayer):
         ] + self.learning_rate * (reward + self.discount_rate * self.Vs[state])
         self.Vs[prev_state] = max(self.Qs[prev_state].values())
 
-    def find_reward(self, opponent: IpdPlayer) -> Dict[Action, Dict[Action, Score]]:
+    def find_reward(self, opponent: Player) -> Dict[Action, Dict[Action, Score]]:
         """
         Finds the reward gained on the last iteration
         """

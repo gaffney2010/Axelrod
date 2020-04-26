@@ -19,9 +19,9 @@ class TestGenericPlayerOne(unittest.TestCase):
     p3 = axl.MemoryOnePlayer(four_vector=(1, 0.5, 1, 0.5))
 
     def test_name(self):
-        self.assertEqual(self.p1.name, "Generic Memory One IpdPlayer: (0, 0, 0, 0)")
-        self.assertEqual(self.p2.name, "Generic Memory One IpdPlayer: (1, 0, 1, 0)")
-        self.assertEqual(self.p3.name, "Generic Memory One IpdPlayer: (1, 0.5, 1, 0.5)")
+        self.assertEqual(self.p1.name, "Generic Memory One Player: (0, 0, 0, 0)")
+        self.assertEqual(self.p2.name, "Generic Memory One Player: (1, 0, 1, 0)")
+        self.assertEqual(self.p3.name, "Generic Memory One Player: (1, 0.5, 1, 0.5)")
 
     def test_stochastic_classification(self):
         self.assertFalse(axl.Classifiers["stochastic"](self.p1))
@@ -93,7 +93,7 @@ class TestGTFT(TestPlayer):
         self.versus_test(opponent=axl.Alternator(), expected_actions=actions, seed=1)
 
     def test_four_vector(self):
-        (R, P, S, T) = axl.IpdGame().RPST()
+        (R, P, S, T) = axl.Game().RPST()
         p = min(1 - (T - R) / (R - S), (R - P) / (T - P))
         expected_dictionary = {(C, C): 1.0, (C, D): p, (D, C): 1.0, (D, D): p}
         test_four_vector(self, expected_dictionary)
@@ -293,9 +293,9 @@ class TestGenericReactiveStrategy(unittest.TestCase):
     p3 = axl.ReactivePlayer(probabilities=(1, 0.5))
 
     def test_name(self):
-        self.assertEqual(self.p1.name, "Reactive IpdPlayer: (0, 0)")
-        self.assertEqual(self.p2.name, "Reactive IpdPlayer: (1, 0)")
-        self.assertEqual(self.p3.name, "Reactive IpdPlayer: (1, 0.5)")
+        self.assertEqual(self.p1.name, "Reactive Player: (0, 0)")
+        self.assertEqual(self.p2.name, "Reactive Player: (1, 0)")
+        self.assertEqual(self.p3.name, "Reactive Player: (1, 0.5)")
 
     def test_four_vector(self):
         self.assertEqual(

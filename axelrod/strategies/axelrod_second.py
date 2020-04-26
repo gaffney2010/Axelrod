@@ -10,14 +10,14 @@ from typing import List
 import numpy as np
 from axelrod.action import Action
 from axelrod.interaction_utils import compute_final_score
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 from axelrod.strategies.finite_state_machines import FSMPlayer
 
 C, D = Action.C, Action.D
 
 
-class SecondByChampion(IpdPlayer):
+class SecondByChampion(Player):
     """
     Strategy submitted to Axelrod's second tournament by Danny Champion.
 
@@ -43,7 +43,7 @@ class SecondByChampion(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         current_round = len(self.history)
         # Cooperate for the first 10 turns
         if current_round == 0:
@@ -61,7 +61,7 @@ class SecondByChampion(IpdPlayer):
                 return D
         return C
 
-class SecondByEatherley(IpdPlayer):
+class SecondByEatherley(Player):
     """
     Strategy submitted to Axelrod's second tournament by Graham Eatherley.
 
@@ -87,7 +87,7 @@ class SecondByEatherley(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         # Cooperate on the first move
         if not len(opponent.history):
             return C
@@ -100,7 +100,7 @@ class SecondByEatherley(IpdPlayer):
         return random_choice(1 - defection_prop)
 
 
-class SecondByTester(IpdPlayer):
+class SecondByTester(Player):
     """
     Submitted to Axelrod's second tournament by David Gladstein.
 
@@ -131,7 +131,7 @@ class SecondByTester(IpdPlayer):
         super().__init__()
         self.is_TFT = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Defect on the first move
         if not opponent.history:
             return D
@@ -149,7 +149,7 @@ class SecondByTester(IpdPlayer):
             return self.history[-1].flip()
 
 
-class SecondByGladstein(IpdPlayer):
+class SecondByGladstein(Player):
     """
     Submitted to Axelrod's second tournament by David Gladstein.
 
@@ -185,7 +185,7 @@ class SecondByGladstein(IpdPlayer):
         # This strategy assumes the opponent is a patsy
         self.patsy = True
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Defect on the first move
         if not self.history:
             return D
@@ -205,7 +205,7 @@ class SecondByGladstein(IpdPlayer):
             return opponent.history[-1]
 
 
-class SecondByTranquilizer(IpdPlayer):
+class SecondByTranquilizer(Player):
 
     """
     Submitted to Axelrod's second tournament by Craig Feathers
@@ -376,7 +376,7 @@ class SecondByTranquilizer(IpdPlayer):
             ) / (self.one_turn_after_good_defection_ratio_count + 1)
             self.one_turn_after_good_defection_ratio_count += 1
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
 
         if not self.history:
             return C
@@ -420,7 +420,7 @@ class SecondByTranquilizer(IpdPlayer):
         return opponent.history[-1]
 
 
-class SecondByGrofman(IpdPlayer):
+class SecondByGrofman(Player):
     """
     Submitted to Axelrod's second tournament by Bernard Grofman.
 
@@ -459,7 +459,7 @@ class SecondByGrofman(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # Cooperate on the first two moves
         if len(self.history) < 2:
             return C
@@ -478,7 +478,7 @@ class SecondByGrofman(IpdPlayer):
             return D
 
 
-class SecondByKluepfel(IpdPlayer):
+class SecondByKluepfel(Player):
     """
     Strategy submitted to Axelrod's second tournament by Charles Kluepfel
     (K32R).
@@ -527,7 +527,7 @@ class SecondByKluepfel(IpdPlayer):
         super().__init__()
         self.cd_counts, self.dd_counts, self.dc_counts, self.cc_counts = 0, 0, 0, 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # First update the response matrix.
         if len(self.history) >= 2:
             if self.history[-2] == D:
@@ -583,7 +583,7 @@ class SecondByKluepfel(IpdPlayer):
                 return one_move_ago.flip()
 
 
-class SecondByBorufsen(IpdPlayer):
+class SecondByBorufsen(Player):
     """
     Strategy submitted to Axelrod's second tournament by Otto Borufsen
     (K32R), and came in third in that tournament.
@@ -657,7 +657,7 @@ class SecondByBorufsen(IpdPlayer):
             return C
         return D
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
 
         if turn == 1:
@@ -739,7 +739,7 @@ class SecondByBorufsen(IpdPlayer):
             return self.try_return(opponent.history[-1])
 
 
-class SecondByCave(IpdPlayer):
+class SecondByCave(Player):
     """
     Strategy submitted to Axelrod's second tournament by Rob Cave (K49R), and
     came in fourth in that tournament.
@@ -771,7 +771,7 @@ class SecondByCave(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
         if turn == 1:
             return C
@@ -796,7 +796,7 @@ class SecondByCave(IpdPlayer):
             return C
 
 
-class SecondByWmAdams(IpdPlayer):
+class SecondByWmAdams(Player):
     """
     Strategy submitted to Axelrod's second tournament by William Adams (K44R),
     and came in fifth in that tournament.
@@ -822,7 +822,7 @@ class SecondByWmAdams(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) <= 1:
             return C
         number_defects = opponent.defections
@@ -836,7 +836,7 @@ class SecondByWmAdams(IpdPlayer):
         return C
 
 
-class SecondByGraaskampKatzen(IpdPlayer):
+class SecondByGraaskampKatzen(Player):
     """
     Strategy submitted to Axelrod's second tournament by Jim Graaskamp and Ken
     Katzen (K60R), and came in sixth in that tournament.
@@ -874,12 +874,12 @@ class SecondByGraaskampKatzen(IpdPlayer):
         self.own_score = 0
         self.mode = "Normal"
 
-    def update_score(self, opponent: IpdPlayer):
+    def update_score(self, opponent: Player):
         game = self.match_attributes["game"]
         last_round = (self.history[-1], opponent.history[-1])
         self.own_score += game.score(last_round)[0]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if self.mode == "Defect":
             return D
 
@@ -909,7 +909,7 @@ class SecondByGraaskampKatzen(IpdPlayer):
         return opponent.history[-1]  # Tit-for-Tat
 
 
-class SecondByWeiner(IpdPlayer):
+class SecondByWeiner(Player):
     """
     Strategy submitted to Axelrod's second tournament by Herb Weiner (K41R),
     and came in seventh in that tournament.
@@ -969,7 +969,7 @@ class SecondByWeiner(IpdPlayer):
             return D
         return to_return
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) == 0:
             return C
 
@@ -1001,7 +1001,7 @@ class SecondByWeiner(IpdPlayer):
             return self.try_return(opponent.history[-1])
 
 
-class SecondByHarrington(IpdPlayer):
+class SecondByHarrington(Player):
     """
     Strategy submitted to Axelrod's second tournament by Paul Harrington (K75R)
     and came in eighth in that tournament.
@@ -1238,7 +1238,7 @@ class SecondByHarrington(IpdPlayer):
         if self.parity_streak[self.parity_bit] >= self.parity_limit:
             return True
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
 
         if turn == 1:
@@ -1340,7 +1340,7 @@ class SecondByHarrington(IpdPlayer):
         return self.try_return(D, lower_flags=False)
 
 
-class SecondByTidemanAndChieruzzi(IpdPlayer):
+class SecondByTidemanAndChieruzzi(Player):
     """
     Strategy submitted to Axelrod's second tournament by T. Nicolaus Tideman
     and Paula Chieruzzi (K84R) and came in ninth in that tournament.
@@ -1395,7 +1395,7 @@ class SecondByTidemanAndChieruzzi(IpdPlayer):
         self.score_to_beat = 0
         self.score_to_beat_inc = 0
 
-    def _score_last_round(self, opponent: IpdPlayer):
+    def _score_last_round(self, opponent: Player):
         """Updates the scores for each player."""
         # Load the default game if not supplied by a tournament.
         game = self.match_attributes["game"]
@@ -1404,7 +1404,7 @@ class SecondByTidemanAndChieruzzi(IpdPlayer):
         self.current_score += scores[0]
         self.opponent_score += scores[1]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         current_round = len(self.history) + 1
 
         if current_round == 1:
@@ -1451,7 +1451,7 @@ class SecondByTidemanAndChieruzzi(IpdPlayer):
         return D
 
 
-class SecondByGetzler(IpdPlayer):
+class SecondByGetzler(Player):
     """
     Strategy submitted to Axelrod's second tournament by Abraham Getzler (K35R)
     and came in eleventh in that tournament.
@@ -1479,7 +1479,7 @@ class SecondByGetzler(IpdPlayer):
         super().__init__()
         self.flack = 0.0  # The relative untrustworthiness of opponent
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not opponent.history:
             return C
 
@@ -1489,7 +1489,7 @@ class SecondByGetzler(IpdPlayer):
         return random_choice(1.0 - self.flack)
 
 
-class SecondByLeyvraz(IpdPlayer):
+class SecondByLeyvraz(Player):
     """
     Strategy submitted to Axelrod's second tournament by Fransois Leyvraz
     (K68R) and came in twelfth in that tournament.
@@ -1532,7 +1532,7 @@ class SecondByLeyvraz(IpdPlayer):
             (D, D, D): 0.25,  # Rule 1
         }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         recent_history = [C, C, C]  # Default to C.
         for go_back in range(1, 4):
             if len(opponent.history) >= go_back:
@@ -1543,7 +1543,7 @@ class SecondByLeyvraz(IpdPlayer):
         )
 
 
-class SecondByWhite(IpdPlayer):
+class SecondByWhite(Player):
     """
     Strategy submitted to Axelrod's second tournament by Edward C White (K72R)
     and came in thirteenth in that tournament.
@@ -1569,7 +1569,7 @@ class SecondByWhite(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
 
         if turn <= 10 or opponent.history[-1] == C:
@@ -1580,7 +1580,7 @@ class SecondByWhite(IpdPlayer):
         return C
 
 
-class SecondByBlack(IpdPlayer):
+class SecondByBlack(Player):
     """
     Strategy submitted to Axelrod's second tournament by Paul E Black (K83R)
     and came in fifteenth in that tournament.
@@ -1613,7 +1613,7 @@ class SecondByBlack(IpdPlayer):
         # Cooperation probability
         self.prob_coop = {0: 1.0, 1: 1.0, 2: 0.88, 3: 0.68, 4: 0.4, 5: 0.04}
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(opponent.history) < 5:
             return C
 
@@ -1625,7 +1625,7 @@ class SecondByBlack(IpdPlayer):
         return random_choice(self.prob_coop[number_defects])
 
 
-class SecondByRichardHufford(IpdPlayer):
+class SecondByRichardHufford(Player):
     """
     Strategy submitted to Axelrod's second tournament by Richard Hufford (K47R)
     and came in sixteenth in that tournament.
@@ -1691,7 +1691,7 @@ class SecondByRichardHufford(IpdPlayer):
         self.coop_after_ab_count = 2
         self.def_after_ab_count = 2
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
         if turn == 1:
             return C
@@ -1739,7 +1739,7 @@ class SecondByRichardHufford(IpdPlayer):
         return D
 
 
-class SecondByYamachi(IpdPlayer):
+class SecondByYamachi(Player):
     """
     Strategy submitted to Axelrod's second tournament by Brian Yamachi (K64R)
     and came in seventeenth in that tournament.
@@ -1811,7 +1811,7 @@ class SecondByYamachi(IpdPlayer):
 
         return to_return
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
         if turn == 1:
             return self.try_return(C, 0)
@@ -1930,7 +1930,7 @@ class SecondByMikkelson(FSMPlayer):
         super().__init__()
         self.credit = 7
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
         if turn == 1:
             return C
@@ -1956,7 +1956,7 @@ class SecondByMikkelson(FSMPlayer):
         return C
 
 
-class SecondByRowsam(IpdPlayer):
+class SecondByRowsam(Player):
     """
     Strategy submitted to Axelrod's second tournament by Glen Rowsam (K58R)
     and came in 21st in that tournament.
@@ -2007,7 +2007,7 @@ class SecondByRowsam(IpdPlayer):
         self.current_score = 0
         self.opponent_score = 0
 
-    def _score_last_round(self, opponent: IpdPlayer):
+    def _score_last_round(self, opponent: Player):
         """Updates the scores for each player."""
         game = self.match_attributes["game"]
         last_round = (self.history[-1], opponent.history[-1])
@@ -2015,7 +2015,7 @@ class SecondByRowsam(IpdPlayer):
         self.current_score += scores[0]
         self.opponent_score += scores[1]
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
         if turn > 1:
             self._score_last_round(opponent)
@@ -2061,7 +2061,7 @@ class SecondByRowsam(IpdPlayer):
         return D
 
 
-class SecondByAppold(IpdPlayer):
+class SecondByAppold(Player):
     """
     Strategy submitted to Axelrod's second tournament by Scott Appold (K88R) and
     came in 22nd in that tournament.
@@ -2106,7 +2106,7 @@ class SecondByAppold(IpdPlayer):
 
         self.first_opp_def = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history) + 1
 
         us_two_turns_ago = C if turn <= 2 else self.history[-2]

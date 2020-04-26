@@ -1,13 +1,13 @@
 from math import pi, sin
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class SelfSteem(IpdPlayer):
+class SelfSteem(Player):
     """
     This strategy is based on the feeling with the same name.
     It is modeled on the sine curve(f = sin( 2* pi * n / 10 )), which varies
@@ -37,7 +37,7 @@ class SelfSteem(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turns_number = len(self.history)
         sine_value = sin(2 * pi * turns_number / 10)
 

@@ -2,7 +2,7 @@ import random
 from typing import List
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 Vector = List[float]
@@ -11,7 +11,7 @@ Vector = List[float]
 C, D = Action.C, Action.D
 
 
-class CollectiveStrategy(IpdPlayer):
+class CollectiveStrategy(Player):
     """Defined in [Li2009]_. 'It always cooperates in the first move and defects
     in the second move. If the opponent also cooperates in the first move and
     defects in the second move, CS will cooperate until the opponent defects.
@@ -35,7 +35,7 @@ class CollectiveStrategy(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history)
         if turn == 0:
             return C
@@ -48,7 +48,7 @@ class CollectiveStrategy(IpdPlayer):
         return D
 
 
-class Detective(IpdPlayer):
+class Detective(Player):
     """
     Starts with C, D, C, C, or with the given sequence of actions.
     If the opponent defects at least once in the first fixed rounds,
@@ -77,7 +77,7 @@ class Detective(IpdPlayer):
         else:
             self.initial_actions = initial_actions
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         hist_size = len(self.history)
         init_size = len(self.initial_actions)
         if hist_size < init_size:
@@ -87,7 +87,7 @@ class Detective(IpdPlayer):
         return opponent.history[-1] # TFT
 
 
-class Prober(IpdPlayer):
+class Prober(Player):
     """
     Plays D, C, C initially. Defects forever if opponent cooperated in moves 2
     and 3. Otherwise plays TFT.
@@ -108,7 +108,7 @@ class Prober(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history)
         if turn == 0:
             return D
@@ -124,7 +124,7 @@ class Prober(IpdPlayer):
                 return D if opponent.history[-1:] == [D] else C
 
 
-class Prober2(IpdPlayer):
+class Prober2(Player):
     """
     Plays D, C, C initially. Cooperates forever if opponent played D then C
     in moves 2 and 3. Otherwise plays TFT.
@@ -145,7 +145,7 @@ class Prober2(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history)
         if turn == 0:
             return D
@@ -161,7 +161,7 @@ class Prober2(IpdPlayer):
                 return D if opponent.history[-1:] == [D] else C
 
 
-class Prober3(IpdPlayer):
+class Prober3(Player):
     """
     Plays D, C initially. Defects forever if opponent played C in moves 2.
     Otherwise plays TFT.
@@ -182,7 +182,7 @@ class Prober3(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history)
         if turn == 0:
             return D
@@ -196,7 +196,7 @@ class Prober3(IpdPlayer):
                 return D if opponent.history[-1:] == [D] else C
 
 
-class Prober4(IpdPlayer):
+class Prober4(Player):
     """
     Plays C, C, D, C, D, D, D, C, C, D, C, D, C, C, D, C, D, D, C, D initially.
     Counts retaliating and provocative defections of the opponent.
@@ -248,7 +248,7 @@ class Prober4(IpdPlayer):
         self.unjust_Ds = 0
         self.turned_defector = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not self.history:
             return self.init_sequence[0]
         turn = len(self.history)
@@ -270,7 +270,7 @@ class Prober4(IpdPlayer):
             return D if opponent.history[-1] == D else C
 
 
-class HardProber(IpdPlayer):
+class HardProber(Player):
     """
     Plays D, D, C, C initially. Defects forever if opponent cooperated in moves
     2 and 3. Otherwise plays TFT.
@@ -291,7 +291,7 @@ class HardProber(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         turn = len(self.history)
         if turn == 0:
             return D
@@ -309,7 +309,7 @@ class HardProber(IpdPlayer):
                 return D if opponent.history[-1:] == [D] else C
 
 
-class NaiveProber(IpdPlayer):
+class NaiveProber(Player):
     """
     Like tit-for-tat, but it occasionally defects with a small probability.
 
@@ -341,7 +341,7 @@ class NaiveProber(IpdPlayer):
         if (self.p == 0) or (self.p == 1):
             self.classifier["stochastic"] = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # First move
         if len(self.history) == 0:
             return C
@@ -385,7 +385,7 @@ class RemorsefulProber(NaiveProber):
         super().__init__(p)
         self.probing = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         # First move
         if len(self.history) == 0:
             return C

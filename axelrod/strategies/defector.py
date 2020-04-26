@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Defector(IpdPlayer):
+class Defector(Player):
     """A player who only ever defects.
 
     Names:
@@ -26,11 +26,11 @@ class Defector(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         return D
 
 
-class TrickyDefector(IpdPlayer):
+class TrickyDefector(Player):
     """A defector that is trying to be tricky.
 
     Names:
@@ -49,7 +49,7 @@ class TrickyDefector(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Almost always defects, but will try to trick the opponent into
         cooperating.
 

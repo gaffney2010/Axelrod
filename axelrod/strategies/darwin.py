@@ -7,12 +7,12 @@ from collections import defaultdict
 from typing import Optional
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Darwin(IpdPlayer):
+class Darwin(Player):
     """
     A strategy which accumulates a record (the 'genome') of what the most
     favourable response in the previous round should have been, and naively
@@ -61,7 +61,7 @@ class Darwin(IpdPlayer):
         """Foils _strategy_utils.inspect_strategy and _strategy_utils.look_ahead"""
         return C
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         trial = len(self.history)
 
         if trial > 0:

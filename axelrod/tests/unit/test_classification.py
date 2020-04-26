@@ -14,10 +14,10 @@ from axelrod.classifier import (
     memory_depth,
     rebuild_classifier_table,
 )
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 
-class TitForTatWithEmptyClassifier(IpdPlayer):
+class TitForTatWithEmptyClassifier(Player):
     """
     Same name as TitForTat, but with empty classifier.
     """
@@ -27,7 +27,7 @@ class TitForTatWithEmptyClassifier(IpdPlayer):
     classifier = {}
 
 
-class TitForTatWithNonTrivialInitialzer(IpdPlayer):
+class TitForTatWithNonTrivialInitialzer(Player):
     """
     Same name as TitForTat, but with empty classifier.
     """

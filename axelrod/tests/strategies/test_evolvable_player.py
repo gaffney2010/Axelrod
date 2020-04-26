@@ -155,12 +155,12 @@ class TestEvolvablePlayer(TestPlayer):
         for opponent_class in [axl.Random, axl.TitForTat, axl.Alternator]:
             axl.seed(0)
             opponent = opponent_class()
-            match = axl.IpdMatch((player1.clone(), opponent))
+            match = axl.Match((player1.clone(), opponent))
             results1 = match.play()
 
             axl.seed(0)
             opponent = opponent_class()
-            match = axl.IpdMatch((player2.clone(), opponent))
+            match = axl.Match((player2.clone(), opponent))
             results2 = match.play()
 
             self.assertEqual(results1, results2)

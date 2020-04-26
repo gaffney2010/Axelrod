@@ -67,7 +67,7 @@ class RecordedTQDM(tqdm):
 class TestTournament(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.game = axl.IpdGame()
+        cls.game = axl.Game()
         cls.players = [s() for s in test_strategies]
         cls.test_name = "test"
         cls.test_repetitions = test_repetitions
@@ -93,7 +93,7 @@ class TestTournament(unittest.TestCase):
         cls.filename = axl_filename(path)
 
     def setUp(self):
-        self.test_tournament = axl.IpdTournament(
+        self.test_tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -102,7 +102,7 @@ class TestTournament(unittest.TestCase):
         )
 
     def test_init(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -110,18 +110,18 @@ class TestTournament(unittest.TestCase):
             noise=0.2,
         )
         self.assertEqual(len(tournament.players), len(test_strategies))
-        self.assertIsInstance(tournament.players[0].match_attributes["game"], axl.IpdGame)
+        self.assertIsInstance(tournament.players[0].match_attributes["game"], axl.Game)
         self.assertEqual(tournament.game.score((C, C)), (3, 3))
         self.assertEqual(tournament.turns, self.test_turns)
         self.assertEqual(tournament.repetitions, 10)
         self.assertEqual(tournament.name, "test")
         self.assertIsInstance(tournament._logger, logging.Logger)
         self.assertEqual(tournament.noise, 0.2)
-        anonymous_tournament = axl.IpdTournament(players=self.players)
+        anonymous_tournament = axl.Tournament(players=self.players)
         self.assertEqual(anonymous_tournament.name, "axelrod")
 
     def test_init_with_match_attributes(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             players=self.players, match_attributes={"length": float("inf")}
         )
         mg = tournament.match_generator
@@ -129,7 +129,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(match_params["match_attributes"], {"length": float("inf")})
 
     def test_warning(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -244,7 +244,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(pbar.total, self.test_tournament.match_generator.size)
 
         new_edges = [(0, 1), (1, 2), (2, 3), (3, 4)]
-        new_tournament = axl.IpdTournament(players=self.players, edges=new_edges)
+        new_tournament = axl.Tournament(players=self.players, edges=new_edges)
         new_tournament.use_progress_bar = True
         pbar = new_tournament._get_progress_bar()
         self.assertEqual(pbar.desc, "Playing matches")
@@ -253,7 +253,7 @@ class TestTournament(unittest.TestCase):
 
     def test_serial_play(self):
         # Test that we get an instance of ResultSet
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -264,7 +264,7 @@ class TestTournament(unittest.TestCase):
         self.assertIsInstance(results, axl.ResultSet)
 
         # Test that _run_serial_repetitions is called with empty matches list
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -276,8 +276,8 @@ class TestTournament(unittest.TestCase):
 
     def test_serial_play_with_different_game(self):
         # Test that a non default game is passed to the result set
-        game = axl.IpdGame(p=-1, r=-1, s=-1, t=-1)
-        tournament = axl.IpdTournament(
+        game = axl.Game(p=-1, r=-1, s=-1, t=-1)
+        tournament = axl.Tournament(
             name=self.test_name, players=self.players, game=game, turns=1, repetitions=1
         )
         results = tournament.play(progress_bar=False)
@@ -286,7 +286,7 @@ class TestTournament(unittest.TestCase):
     @patch("tqdm.tqdm", RecordedTQDM)
     def test_no_progress_bar_play(self):
         """Test that progress bar is not created for progress_bar=False"""
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -318,7 +318,7 @@ class TestTournament(unittest.TestCase):
     @patch("tqdm.tqdm", RecordedTQDM)
     def test_progress_bar_play(self):
         """Test that progress bar is created by default and with True argument"""
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -357,7 +357,7 @@ class TestTournament(unittest.TestCase):
     def test_progress_bar_play_parallel(self):
         """Test that tournament plays when asking for progress bar for parallel
         tournament and that progress bar is created."""
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -401,7 +401,7 @@ class TestTournament(unittest.TestCase):
     )
     @settings(max_examples=50)
     @example(
-        tournament=axl.IpdTournament(
+        tournament=axl.Tournament(
             players=[s() for s in test_strategies],
             turns=test_turns,
             repetitions=test_repetitions,
@@ -411,12 +411,12 @@ class TestTournament(unittest.TestCase):
     # As explained there: https://github.com/Axelrod-Python/Axelrod/issues/465,
     # these two examples were identified by hypothesis.
     @example(
-        tournament=axl.IpdTournament(
+        tournament=axl.Tournament(
             players=[axl.BackStabber(), axl.MindReader()], turns=2, repetitions=1,
         )
     )
     @example(
-        tournament=axl.IpdTournament(
+        tournament=axl.Tournament(
             players=[axl.BackStabber(), axl.ThueMorse()], turns=2, repetitions=1
         )
     )
@@ -430,7 +430,7 @@ class TestTournament(unittest.TestCase):
 
     def test_parallel_play(self):
         # Test that we get an instance of ResultSet
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -450,7 +450,7 @@ class TestTournament(unittest.TestCase):
             axl.ThueMorse(),
             axl.DoubleCrosser(),
         ]
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=players,
             game=self.game,
@@ -461,7 +461,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(len(scores), len(players))
 
     def test_parallel_play_with_writing_to_file(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -476,7 +476,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(tournament.num_interactions, 75)
 
     def test_run_serial(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -497,7 +497,7 @@ class TestTournament(unittest.TestCase):
             def __reduce__(self):
                 return MagicMock, ()
 
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -524,7 +524,7 @@ class TestTournament(unittest.TestCase):
     def test_n_workers(self):
         max_processes = cpu_count()
 
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -533,7 +533,7 @@ class TestTournament(unittest.TestCase):
         )
         self.assertEqual(tournament._n_workers(processes=1), max_processes)
 
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -549,7 +549,7 @@ class TestTournament(unittest.TestCase):
         # This is a separate test with a skip condition because we
         # cannot guarantee that the tests will always run on a machine
         # with more than one processor
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -562,7 +562,7 @@ class TestTournament(unittest.TestCase):
         workers = 2
         work_queue = Queue()
         done_queue = Queue()
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -582,7 +582,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(stops, workers)
 
     def test_worker(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -609,7 +609,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(queue_stop, "STOP")
 
     def test_build_result_set(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -620,7 +620,7 @@ class TestTournament(unittest.TestCase):
         self.assertIsInstance(results, axl.ResultSet)
 
     def test_no_build_result_set(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -645,7 +645,7 @@ class TestTournament(unittest.TestCase):
     @example(turns=3)
     @example(turns=axl.DEFAULT_TURNS)
     def test_play_matches(self, turns):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -693,13 +693,13 @@ class TestTournament(unittest.TestCase):
         FakeRandom.classifier["stochastic"] = False
         p1 = FakeRandom()
         p2 = FakeRandom()
-        tournament = axl.IpdTournament((p1, p2), turns=5, repetitions=2)
+        tournament = axl.Tournament((p1, p2), turns=5, repetitions=2)
         results = tournament.play(progress_bar=False)
         for player_scores in results.scores:
             self.assertEqual(player_scores[0], player_scores[1])
 
     def test_write_interactions(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -721,7 +721,7 @@ class TestTournament(unittest.TestCase):
         self.assertEqual(len(calls), 15)
 
     def test_write_to_csv_with_results(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -735,7 +735,7 @@ class TestTournament(unittest.TestCase):
         self.assertTrue(df.equals(expected_df))
 
     def test_write_to_csv_without_results(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -752,14 +752,14 @@ class TestTournament(unittest.TestCase):
 class TestProbEndTournament(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.game = axl.IpdGame()
+        cls.game = axl.Game()
         cls.players = [s() for s in test_strategies]
         cls.test_name = "test"
         cls.test_repetitions = test_repetitions
         cls.test_prob_end = test_prob_end
 
     def test_init(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -774,7 +774,7 @@ class TestProbEndTournament(unittest.TestCase):
         self.assertEqual(tournament.name, "test")
         self.assertIsInstance(tournament._logger, logging.Logger)
         self.assertEqual(tournament.noise, 0.2)
-        anonymous_tournament = axl.IpdTournament(players=self.players)
+        anonymous_tournament = axl.Tournament(players=self.players)
         self.assertEqual(anonymous_tournament.name, "axelrod")
 
     @given(
@@ -789,7 +789,7 @@ class TestProbEndTournament(unittest.TestCase):
     )
     @settings(max_examples=5)
     @example(
-        tournament=axl.IpdTournament(
+        tournament=axl.Tournament(
             players=[s() for s in test_strategies],
             prob_end=0.2,
             repetitions=test_repetitions,
@@ -799,12 +799,12 @@ class TestProbEndTournament(unittest.TestCase):
     # As explained there: https://github.com/Axelrod-Python/Axelrod/issues/465,
     # these two examples were identified by hypothesis.
     @example(
-        tournament=axl.IpdTournament(
+        tournament=axl.Tournament(
             players=[axl.BackStabber(), axl.MindReader()], prob_end=0.2, repetitions=1,
         )
     )
     @example(
-        tournament=axl.IpdTournament(
+        tournament=axl.Tournament(
             players=[axl.ThueMorse(), axl.MindReader()], prob_end=0.2, repetitions=1,
         )
     )
@@ -820,7 +820,7 @@ class TestProbEndTournament(unittest.TestCase):
 class TestSpatialTournament(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.game = axl.IpdGame()
+        cls.game = axl.Game()
         cls.players = [s() for s in test_strategies]
         cls.test_name = "test"
         cls.test_repetitions = test_repetitions
@@ -828,7 +828,7 @@ class TestSpatialTournament(unittest.TestCase):
         cls.test_edges = test_edges
 
     def test_init(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -845,7 +845,7 @@ class TestSpatialTournament(unittest.TestCase):
         self.assertIsInstance(tournament._logger, logging.Logger)
         self.assertEqual(tournament.noise, 0.2)
         self.assertEqual(tournament.match_generator.noise, 0.2)
-        anonymous_tournament = axl.IpdTournament(players=self.players)
+        anonymous_tournament = axl.Tournament(players=self.players)
         self.assertEqual(anonymous_tournament.name, "axelrod")
 
     @given(
@@ -872,11 +872,11 @@ class TestSpatialTournament(unittest.TestCase):
                 edges.append((i, j))
 
         # create a round robin tournament
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             players, repetitions=repetitions, turns=turns, noise=noise
         )
         # create a complete spatial tournament
-        spatial_tournament = axl.IpdTournament(
+        spatial_tournament = axl.Tournament(
             players, repetitions=repetitions, turns=turns, noise=noise, edges=edges
         )
 
@@ -915,13 +915,13 @@ class TestSpatialTournament(unittest.TestCase):
             axl.Grudger(),
         ]
         edges = [(0, 2), (0, 3), (1, 2), (1, 3)]
-        tournament = axl.IpdTournament(players, edges=edges)
+        tournament = axl.Tournament(players, edges=edges)
         results = tournament.play(progress_bar=False)
         expected_ranked_names = ["Cooperator", "Tit For Tat", "Grudger", "Defector"]
         self.assertEqual(results.ranked_names, expected_ranked_names)
 
         # Check that this tournament runs with noise
-        tournament = axl.IpdTournament(players, edges=edges, noise=0.5)
+        tournament = axl.Tournament(players, edges=edges, noise=0.5)
         results = tournament.play(progress_bar=False)
         self.assertIsInstance(results, axl.ResultSet)
 
@@ -929,7 +929,7 @@ class TestSpatialTournament(unittest.TestCase):
 class TestProbEndingSpatialTournament(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.game = axl.IpdGame()
+        cls.game = axl.Game()
         cls.players = [s() for s in test_strategies]
         cls.test_name = "test"
         cls.test_repetitions = test_repetitions
@@ -937,7 +937,7 @@ class TestProbEndingSpatialTournament(unittest.TestCase):
         cls.test_edges = test_edges
 
     def test_init(self):
-        tournament = axl.IpdTournament(
+        tournament = axl.Tournament(
             name=self.test_name,
             players=self.players,
             game=self.game,
@@ -973,7 +973,7 @@ class TestProbEndingSpatialTournament(unittest.TestCase):
         players = [s() for s in strategies]
 
         # create a prob end round robin tournament
-        tournament = axl.IpdTournament(players, prob_end=prob_end, repetitions=reps)
+        tournament = axl.Tournament(players, prob_end=prob_end, repetitions=reps)
         axl.seed(seed)
         results = tournament.play(progress_bar=False)
 
@@ -981,7 +981,7 @@ class TestProbEndingSpatialTournament(unittest.TestCase):
         # edges
         edges = [(i, j) for i in range(len(players)) for j in range(i, len(players))]
 
-        spatial_tournament = axl.IpdTournament(
+        spatial_tournament = axl.Tournament(
             players, prob_end=prob_end, repetitions=reps, edges=edges
         )
         axl.seed(seed)
@@ -1007,7 +1007,7 @@ class TestProbEndingSpatialTournament(unittest.TestCase):
         Tests that gives same result as the corresponding spatial round robin
         spatial tournament
         """
-        prob_end_tour = axl.IpdTournament(
+        prob_end_tour = axl.Tournament(
             tournament.players,
             prob_end=1,
             edges=tournament.edges,

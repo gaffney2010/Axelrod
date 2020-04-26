@@ -87,7 +87,7 @@ class TestStalker(TestPlayer):
     def test_reset(self):
         axl.seed(0)
         player = axl.Stalker()
-        m = axl.IpdMatch((player, axl.Alternator()))
+        m = axl.Match((player, axl.Alternator()))
         m.play()
         self.assertNotEqual(player.current_score, 0)
         player.reset()

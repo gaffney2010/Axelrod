@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Appeaser(IpdPlayer):
+class Appeaser(Player):
     """A player who tries to guess what the opponent wants.
 
     Switch the classifier every time the opponent plays D.
@@ -26,7 +26,7 @@ class Appeaser(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if not len(opponent.history):
             return C
         else:

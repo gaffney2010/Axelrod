@@ -496,7 +496,7 @@ class TestResultSet(unittest.TestCase):
         # the copies of the strategy.
         axl.seed(0)
         players = [s() for s in axl.demo_strategies]
-        tournament = axl.IpdTournament(players, repetitions=2, turns=5)
+        tournament = axl.Tournament(players, repetitions=2, turns=5)
         results = tournament.play(progress_bar=False)
         self.assertEqual(results.payoff_diffs_means[-1][-1], 0.0)
 
@@ -510,7 +510,7 @@ class TestResultSet(unittest.TestCase):
         self.assertEqual(rs_sets[0], rs_sets[1])
 
         players = [s() for s in axl.demo_strategies]
-        tournament = axl.IpdTournament(players, repetitions=2, turns=5)
+        tournament = axl.Tournament(players, repetitions=2, turns=5)
         results = tournament.play(progress_bar=False)
         self.assertNotEqual(results, rs_sets[0])
 
@@ -571,7 +571,7 @@ class TestResultSet(unittest.TestCase):
             axl.TitForTat(),
             axl.Grudger(),
         ]
-        tournament = axl.IpdTournament(players, turns=10, repetitions=3)
+        tournament = axl.Tournament(players, turns=10, repetitions=3)
         results = tournament.play()
 
         summary = [

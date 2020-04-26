@@ -9,7 +9,7 @@ from typing import Any
 
 from axelrod.action import Action, str_to_actions, actions_to_str
 from axelrod.load_data_ import load_pso_tables
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 from axelrod.random_ import random_choice
 
@@ -40,7 +40,7 @@ class Gambler(LookerUp):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         actions_or_float = super(Gambler, self).strategy(opponent)
         if isinstance(actions_or_float, Action):
             return actions_or_float

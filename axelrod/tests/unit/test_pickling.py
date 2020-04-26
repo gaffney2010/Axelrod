@@ -14,7 +14,7 @@ C, D = axl.Action.C, axl.Action.D
 PointerToWrappedStrategy = axl.ipd.strategy_transformers.FlipTransformer()(axl.ipd.strategy_transformers.FlipTransformer()(axl.Cooperator))
 
 
-class MyDefector(axl.IpdPlayer):
+class MyDefector(axl.Player):
     def __init__(self):
         super(MyDefector, self).__init__()
 
@@ -44,7 +44,7 @@ class InterspersedDualTransformersNamePrefixPresent(axl.Cooperator):
 
 
 @axl.ipd.strategy_transformers.FlipTransformer()
-class MyCooperator(axl.IpdPlayer):
+class MyCooperator(axl.Player):
     def strategy(self, opponent):
         return C
 
@@ -219,11 +219,11 @@ class TestPickle(unittest.TestCase):
             opponent_2 = opponent_class()
 
             axl.seed(0)
-            match_1 = axl.IpdMatch((player, opponent_1), turns=turns)
+            match_1 = axl.Match((player, opponent_1), turns=turns)
             result_1 = match_1.play()
 
             axl.seed(0)
-            match_2 = axl.IpdMatch((clone, opponent_2), turns=turns)
+            match_2 = axl.Match((clone, opponent_2), turns=turns)
             result_2 = match_2.play()
 
             self.assertEqual(result_1, result_2)
@@ -246,14 +246,14 @@ class TestPickle(unittest.TestCase):
                 axl.seed(10)
                 player.reset()
                 opponent = opponent_class()
-                match_1 = axl.IpdMatch((player, opponent), turns=20)
+                match_1 = axl.Match((player, opponent), turns=20)
                 _ = match_1.play()
                 self.assert_equals_instance_from_pickling(player)
 
     def test_final_transformer_called(self):
         player = axl.Alexei()
         copy = pickle.loads(pickle.dumps(player))
-        match = axl.IpdMatch((player, copy), turns=3)
+        match = axl.Match((player, copy), turns=3)
         results = match.play()
         self.assertEqual(results, [(C, C), (C, C), (D, D)])
 
@@ -318,7 +318,7 @@ class TestPickle(unittest.TestCase):
         player = MyCooperator()
         class_names = [class_.__name__ for class_ in MyCooperator.mro()]
         self.assertEqual(
-            class_names, ["FlippedMyCooperator", "MyCooperator", "IpdPlayer", "object"]
+            class_names, ["FlippedMyCooperator", "MyCooperator", "Player", "object"]
         )
 
         self.assert_original_equals_pickled(player)
@@ -333,14 +333,14 @@ class TestPickle(unittest.TestCase):
                 "FlippedFlippedCooperator",
                 "FlippedCooperator",
                 "Cooperator",
-                "IpdPlayer",
+                "Player",
                 "object",
             ],
         )
 
         self.assert_original_equals_pickled(player)
 
-    def test_pointer_to_class_derived_from_IpdPlayer(self):
+    def test_pointer_to_class_derived_from_Player(self):
         player = PointerToWrappedClassNotInStrategies()
 
         class_names = [class_.__name__ for class_ in player.__class__.mro()]
@@ -350,7 +350,7 @@ class TestPickle(unittest.TestCase):
                 "FlippedFlippedMyDefector",
                 "FlippedMyDefector",
                 "MyDefector",
-                "IpdPlayer",
+                "Player",
                 "object",
             ],
         )

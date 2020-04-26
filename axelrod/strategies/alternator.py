@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Alternator(IpdPlayer):
+class Alternator(Player):
     """
     A player who alternates between cooperating and defecting.
 
@@ -25,7 +25,7 @@ class Alternator(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         if len(self.history) == 0:
             return C
         if self.history[-1] == C:

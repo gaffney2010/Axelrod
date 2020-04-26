@@ -5,12 +5,12 @@ optimising them.
 """
 from axelrod._strategy_utils import inspect_strategy, look_ahead
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class MindReader(IpdPlayer):
+class MindReader(Player):
     """A player that looks ahead at what the opponent will do and decides what
     to do.
 
@@ -35,7 +35,7 @@ class MindReader(IpdPlayer):
         """Foils _strategy_utils.inspect_strategy and _strategy_utils.look_ahead"""
         return D
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Pretends to play the opponent a number of times before each match.
         The primary purpose is to look far enough ahead to see if a defect will
@@ -103,6 +103,6 @@ class MirrorMindReader(ProtectedMindReader):
         """Foils _strategy_utils.inspect_strategy and _strategy_utils.look_ahead"""
         return C
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """Will read the mind of the opponent and play the opponent's strategy. """
         return inspect_strategy(self, opponent)

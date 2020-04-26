@@ -17,29 +17,29 @@ class TestGame(unittest.TestCase):
             (D, D): (1, 1),
             (C, C): (3, 3),
         }
-        self.assertEqual(axl.IpdGame().scores, expected_scores)
+        self.assertEqual(axl.Game().scores, expected_scores)
 
     def test_default_RPST(self):
         expected_values = (3, 1, 0, 5)
-        self.assertEqual(axl.IpdGame().RPST(), expected_values)
+        self.assertEqual(axl.Game().RPST(), expected_values)
 
     def test_default_score(self):
-        game = axl.IpdGame()
+        game = axl.Game()
         self.assertEqual(game.score((C, C)), (3, 3))
         self.assertEqual(game.score((D, D)), (1, 1))
         self.assertEqual(game.score((C, D)), (0, 5))
         self.assertEqual(game.score((D, C)), (5, 0))
 
     def test_default_equality(self):
-        self.assertEqual(axl.IpdGame(), axl.IpdGame())
+        self.assertEqual(axl.Game(), axl.Game())
 
     def test_not_default_equality(self):
-        self.assertEqual(axl.IpdGame(1, 2, 3, 4), axl.IpdGame(1, 2, 3, 4))
-        self.assertNotEqual(axl.IpdGame(1, 2, 3, 4), axl.IpdGame(1, 2, 3, 5))
-        self.assertNotEqual(axl.IpdGame(1, 2, 3, 4), axl.IpdGame())
+        self.assertEqual(axl.Game(1, 2, 3, 4), axl.Game(1, 2, 3, 4))
+        self.assertNotEqual(axl.Game(1, 2, 3, 4), axl.Game(1, 2, 3, 5))
+        self.assertNotEqual(axl.Game(1, 2, 3, 4), axl.Game())
 
     def test_wrong_class_equality(self):
-        self.assertNotEqual(axl.IpdGame(), "wrong class")
+        self.assertNotEqual(axl.Game(), "wrong class")
 
     @given(r=integers(), p=integers(), s=integers(), t=integers())
     @settings(max_examples=5)
@@ -51,21 +51,21 @@ class TestGame(unittest.TestCase):
             (D, D): (p, p),
             (C, C): (r, r),
         }
-        game = axl.IpdGame(r, s, t, p)
+        game = axl.Game(r, s, t, p)
         self.assertEqual(game.scores, expected_scores)
 
     @given(r=integers(), p=integers(), s=integers(), t=integers())
     @settings(max_examples=5)
     def test_random_RPST(self, r, p, s, t):
         """Test RPST method with random scores using the hypothesis library."""
-        game = axl.IpdGame(r, s, t, p)
+        game = axl.Game(r, s, t, p)
         self.assertEqual(game.RPST(), (r, p, s, t))
 
     @given(r=integers(), p=integers(), s=integers(), t=integers())
     @settings(max_examples=5)
     def test_random_score(self, r, p, s, t):
         """Test score method with random scores using the hypothesis library."""
-        game = axl.IpdGame(r, s, t, p)
+        game = axl.Game(r, s, t, p)
         self.assertEqual(game.score((C, C)), (r, r))
         self.assertEqual(game.score((D, D)), (p, p))
         self.assertEqual(game.score((C, D)), (s, t))

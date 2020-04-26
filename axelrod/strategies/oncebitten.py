@@ -1,12 +1,12 @@
 import random
 
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class OnceBitten(IpdPlayer):
+class OnceBitten(Player):
     """
     Cooperates once when the opponent defects, but if they defect twice in a row
     defaults to forgetful grudger for 10 turns defecting.
@@ -33,7 +33,7 @@ class OnceBitten(IpdPlayer):
         self.grudged = False
         self.grudge_memory = 0
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """
         Begins by playing C, then plays D for mem_length rounds if the opponent
         ever plays D twice in a row.
@@ -54,7 +54,7 @@ class OnceBitten(IpdPlayer):
         return C
 
 
-class FoolMeOnce(IpdPlayer):
+class FoolMeOnce(Player):
     """
     Forgives one D then retaliates forever on a second D.
 
@@ -75,7 +75,7 @@ class FoolMeOnce(IpdPlayer):
     }
 
     @staticmethod
-    def strategy(opponent: IpdPlayer) -> Action:
+    def strategy(opponent: Player) -> Action:
         if not opponent.history:
             return C
         if opponent.defections > 1:
@@ -83,11 +83,11 @@ class FoolMeOnce(IpdPlayer):
         return C
 
 
-class ForgetfulFoolMeOnce(IpdPlayer):
+class ForgetfulFoolMeOnce(Player):
     """
     Forgives one D then retaliates forever on a second D. Sometimes randomly
     forgets the defection count, and so keeps a secondary count separate from
-    the standard count in IpdPlayer.
+    the standard count in Player.
 
     Names:
 
@@ -117,7 +117,7 @@ class ForgetfulFoolMeOnce(IpdPlayer):
         self._initial = C
         self.forget_probability = forget_probability
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         r = random.random()
         if not opponent.history:
             return self._initial

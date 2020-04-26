@@ -1,10 +1,10 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 C, D = Action.C, Action.D
 
 
-class Grumpy(IpdPlayer):
+class Grumpy(Player):
     """
     A player that defects after a certain level of grumpiness.
     Grumpiness increases when the opponent defects and decreases
@@ -49,7 +49,7 @@ class Grumpy(IpdPlayer):
         self.grumpy_threshold = grumpy_threshold
         self.nice_threshold = nice_threshold
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         """A player that gets grumpier the more the opposition defects,
         and nicer the more they cooperate.
 

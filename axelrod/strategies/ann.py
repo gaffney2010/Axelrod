@@ -4,7 +4,7 @@ import numpy.random as random
 from axelrod.action import Action
 from axelrod.load_data_ import load_weights
 from axelrod.evolvable_player import EvolvablePlayer, InsufficientParametersError, crossover_lists
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 
 
 C, D = Action.C, Action.D
@@ -19,17 +19,17 @@ def num_weights(num_features, num_hidden):
     return size
 
 
-def compute_features(player: IpdPlayer, opponent: IpdPlayer) -> List[int]:
+def compute_features(player: Player, opponent: Player) -> List[int]:
     """
     Compute history features for Neural Network:
     * Opponent's first move is C
     * Opponent's first move is D
     * Opponent's second move is C
     * Opponent's second move is D
-    * IpdPlayer's previous move is C
-    * IpdPlayer's previous move is D
-    * IpdPlayer's second previous move is C
-    * IpdPlayer's second previous move is D
+    * Player's previous move is C
+    * Player's previous move is D
+    * Player's second previous move is C
+    * Player's second previous move is D
     * Opponent's previous move is C
     * Opponent's previous move is D
     * Opponent's second previous move is C
@@ -148,7 +148,7 @@ def split_weights(
     return input2hidden, hidden2output, bias
 
 
-class ANN(IpdPlayer):
+class ANN(Player):
     """Artificial Neural Network based strategy.
 
     A single layer neural network based strategy, with the following
@@ -157,10 +157,10 @@ class ANN(IpdPlayer):
     * Opponent's first move is D
     * Opponent's second move is C
     * Opponent's second move is D
-    * IpdPlayer's previous move is C
-    * IpdPlayer's previous move is D
-    * IpdPlayer's second previous move is C
-    * IpdPlayer's second previous move is D
+    * Player's previous move is C
+    * Player's previous move is D
+    * Player's second previous move is C
+    * Player's second previous move is D
     * Opponent's previous move is C
     * Opponent's previous move is D
     * Opponent's second previous move is C
@@ -206,7 +206,7 @@ class ANN(IpdPlayer):
         self.hidden_to_output_layer_weights = np.array(h2o)
         self.bias_weights = np.array(bias)
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         features = compute_features(self, opponent)
         output = activate(
             self.bias_weights,

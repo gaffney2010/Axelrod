@@ -1,11 +1,11 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 C, D = Action.C, Action.D
 
 
-class BetterAndBetter(IpdPlayer):
+class BetterAndBetter(Player):
     """
     Defects with probability of '(1000 - current turn) / 1000'.
     Therefore it is less and less likely to defect as the round goes on.
@@ -26,7 +26,7 @@ class BetterAndBetter(IpdPlayer):
         "manipulates_state": False,
     }
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         current_round = len(self.history) + 1
         probability = current_round / 1000
         return random_choice(probability)

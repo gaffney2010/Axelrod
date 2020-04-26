@@ -1,9 +1,9 @@
 from axelrod.action import Action
-from axelrod.player import IpdPlayer
+from axelrod.player import Player
 from axelrod.random_ import random_choice
 
 
-class Random(IpdPlayer):
+class Random(Player):
     """A player who randomly chooses between cooperating and defecting.
 
     This strategy came 15th in Axelrod's original tournament.
@@ -42,5 +42,5 @@ class Random(IpdPlayer):
         if p in [0, 1]:
             self.classifier["stochastic"] = False
 
-    def strategy(self, opponent: IpdPlayer) -> Action:
+    def strategy(self, opponent: Player) -> Action:
         return random_choice(self.p)

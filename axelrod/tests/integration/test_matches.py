@@ -29,7 +29,7 @@ class TestMatchOutcomes(unittest.TestCase):
         """A test that if we repeat 3 matches with deterministic and well
         behaved strategies then we get the same result"""
         players = [s() for s in strategies]
-        matches = [axl.IpdMatch(players, turns) for _ in range(3)]
+        matches = [axl.Match(players, turns) for _ in range(3)]
         self.assertEqual(matches[0].play(), matches[1].play())
         self.assertEqual(matches[1].play(), matches[2].play())
 
@@ -48,7 +48,7 @@ class TestMatchOutcomes(unittest.TestCase):
         for _ in range(3):
             axl.seed(seed)
             players = [s() for s in strategies]
-            results.append(axl.IpdMatch(players, turns).play())
+            results.append(axl.Match(players, turns).play())
 
         self.assertEqual(results[0], results[1])
         self.assertEqual(results[1], results[2])
@@ -61,11 +61,11 @@ class TestMatchOutcomes(unittest.TestCase):
         p2 = axl.MemoryOnePlayer(four_vector=(1, 0, 1, 0))
         p3 = axl.MemoryOnePlayer(four_vector=(1, 1, 1, 0))
 
-        m = axl.IpdMatch((p1, p2), turns=3)
+        m = axl.Match((p1, p2), turns=3)
         self.assertEqual(m.play(), [(C, C), (D, C), (D, D)])
 
-        m = axl.IpdMatch((p2, p3), turns=3)
+        m = axl.Match((p2, p3), turns=3)
         self.assertEqual(m.play(), [(C, C), (C, C), (C, C)])
 
-        m = axl.IpdMatch((p1, p3), turns=3)
+        m = axl.Match((p1, p3), turns=3)
         self.assertEqual(m.play(), [(C, C), (D, C), (D, C)])
