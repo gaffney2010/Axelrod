@@ -56,41 +56,39 @@ class Match(object):
             Random seed for reproducibility
         """
 
-        defaults = {
-            (True, True): (DEFAULT_TURNS, 0),
-            (True, False): (float("inf"), prob_end),
-            (False, True): (turns, 0),
-            (False, False): (turns, prob_end),
-        }
-        self.turns, self.prob_end = defaults[(turns is None, prob_end is None)]
+        self.turns, self.prob_end = turns, prob_end
+        if prob_end is None:
+            self.prob_end = 0
+        if turns is None:
+            self.turns = float("inf")
+        if turns is None and prob_end is None:
+            self.turns = DEFAULT_TURNS
 
         self.result = []
         self.noise = noise
 
-        self.set_seed(seed)
-
+        self.game = game
         if game is None:
             self.game = Game()
-        else:
-            self.game = game
 
+        self._cache = deterministic_cache
         if deterministic_cache is None:
             self._cache = DeterministicCache()
-        else:
-            self._cache = deterministic_cache
 
+        self.match_attributes = match_attributes
         if match_attributes is None:
+            # known_turns = inf if both prob_end and turns are None, else turns
             known_turns = self.turns if prob_end is None else float("inf")
             self.match_attributes = {
                 "length": known_turns,
                 "game": self.game,
                 "noise": self.noise,
             }
-        else:
-            self.match_attributes = match_attributes
 
         self.players = list(players)
         self.reset = reset
+
+        self.set_seed(seed)
 
     def set_seed(self, seed):
         """Sets a random seed for the Match, for reproducibility. Initializes
@@ -110,11 +108,9 @@ class Match(object):
     @players.setter
     def players(self, players):
         """Ensure that players are passed the match attributes"""
-        newplayers = []
         for player in players:
             player.set_match_attributes(**self.match_attributes)
-            newplayers.append(player)
-        self._players = newplayers
+        self._players = players
 
     @property
     def _stochastic(self):
@@ -130,7 +126,8 @@ class Match(object):
         A boolean to show whether the deterministic cache should be updated.
         """
         return (
-            not self.noise
+            not self._stochastic
+            and not self.noise
             and self._cache.mutable
             and not (any(Classifiers["stochastic"](p) for p in self.players))
         )
@@ -144,15 +141,14 @@ class Match(object):
             return False
         return len(self._cache[cache_key]) >= turns
 
-    def simultaneous_play(self, player, coplayer, noise=0):
+    def simultaneous_play(self, player, coplayer, noise=None):
         """This pits two players against each other."""
         s1, s2 = player.strategy(coplayer), coplayer.strategy(player)
-        if noise:
-            # Note this uses the Match classes random generator, not either
-            # player's random generator. A player shouldn't be able to
-            # predict the outcome of this noise flip.
-            s1 = self._random.random_flip(s1, noise)
-            s2 = self._random.random_flip(s2, noise)
+        # Note this uses the Match classes random generator, not either
+        # player's random generator. A player shouldn't be able to
+        # predict the outcome of this noise flip.
+        s1 = self._random.random_flip(s1, noise or self.noise or 0)
+        s2 = self._random.random_flip(s2, noise or self.noise or 0)
         player.update_history(s1, s2)
         coplayer.update_history(s2, s1)
         return s1, s2
@@ -182,25 +178,26 @@ class Match(object):
             turns = self.turns
         cache_key = (self.players[0], self.players[1])
 
-        if self._stochastic or not self._cached_enough_turns(cache_key, turns):
-            for p in self.players:
-                if self.reset:
-                    p.reset()
-                p.set_match_attributes(**self.match_attributes)
-                # Generate a random seed for the player, if stochastic
-                if Classifiers["stochastic"](p):
-                    p.set_seed(self._random.random_seed_int())
-            result = []
-            for _ in range(turns):
-                plays = self.simultaneous_play(
-                    self.players[0], self.players[1], self.noise
-                )
-                result.append(plays)
-
-            if self._cache_update_required:
-                self._cache[cache_key] = result
-        else:
+        # Check for cache entry
+        if self._cached_enough_turns(cache_key, turns):
             result = self._cache[cache_key][:turns]
+            self.result = result
+            return result
+        
+        for p in self.players:
+            if self.reset:
+                p.reset()
+            p.set_match_attributes(**self.match_attributes)
+            # Generate a random seed for the player, if stochastic
+            if Classifiers["stochastic"](p):
+                p.set_seed(self._random.random_seed_int())
+        result = []
+        for _ in range(turns):
+            plays = self.simultaneous_play(self.players[0], self.players[1])
+            result.append(plays)
+
+        if self._cache_update_required:
+            self._cache[cache_key] = result
 
         self.result = result
         return result
