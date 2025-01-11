@@ -122,20 +122,17 @@ class MoranProcess(object):
         self._random = RandomGenerator(seed=seed)
         self._bulk_random = BulkRandomGenerator(self._random.random_seed_int())
         self.set_players()
-        # Build the set of mutation targets
-        # Determine the number of unique types (players)
-        keys = set([str(p) for p in players])
+
         # Create a dictionary mapping each type to a set of representatives
-        # of the other types
-        d = dict()
-        for p in players:
-            d[str(p)] = p
-        mutation_targets = dict()
-        for key in sorted(keys):
-            mutation_targets[key] = [
-                v for (k, v) in sorted(d.items()) if k != key
+        # of the other types (deduped).  This is precomputed for efficiency
+        deduped_players_by_str = {str(p): p for p in players}
+        self.mutation_targets = dict()
+        for key in deduped_players_by_str:
+            self.mutation_targets[key] = [
+                v for k, v in deduped_players_by_str.items() if k != key
             ]
-        self.mutation_targets = mutation_targets
+            # Sort for unittests
+            self.mutation_targets[key].sort(key=lambda x: str(x))
 
         if interaction_graph is None:
             interaction_graph = complete_graph(len(players), loops=False)
@@ -218,16 +215,18 @@ class MoranProcess(object):
             return self.players[index].mutate()
 
         # Assuming mutation_method == "transition"
-        if self.mutation_rate > 0:
-            # Choose another strategy at random from the initial population
-            r = self._random.random()
-            if r < self.mutation_rate:
-                s = str(self.players[index])
-                j = self._random.randrange(0, len(self.mutation_targets[s]))
-                p = self.mutation_targets[s][j]
-                return p.clone()
-        # Just clone the player
-        return self.players[index].clone()
+        if (
+            self.mutation_rate == 0
+            or self._random.random() > self.mutation_rate
+        ):
+            # Just clone the player
+            return self.players[index].clone()
+
+        # Choose another strategy at random from the initial population
+        s = str(self.players[index])
+        j = self._random.randrange(0, len(self.mutation_targets[s]))
+        p = self.mutation_targets[s][j]
+        return p.clone()
 
     def death(self, index: int = None) -> int:
         """
